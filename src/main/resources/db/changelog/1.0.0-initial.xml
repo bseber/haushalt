@@ -1,0 +1,51 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+  <changeSet id="2024-08-initial" author="bseber">
+    <createTable tableName="transaction">
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false" />
+      </column>
+      <column name="booking_date" type="date">
+        <constraints nullable="false" />
+      </column>
+      <column name="value_date" type="date">
+        <constraints nullable="true" />
+      </column>
+      <column name="procedure" type="varchar">
+        <constraints nullable="false" />
+      </column>
+      <column name="iban_payer" type="varchar">
+        <constraints nullable="true" />
+      </column>
+      <column name="payer" type="varchar">
+        <constraints nullable="false" />
+      </column>
+      <column name="iban_payee" type="varchar">
+        <constraints nullable="false" />
+      </column>
+      <column name="payee" type="varchar">
+        <constraints nullable="false" />
+      </column>
+      <column name="revenue_type" type="varchar">
+        <constraints nullable="false" />
+      </column>
+      <column name="amount" type="double">
+        <constraints nullable="false" />
+      </column>
+      <column name="currency" type="varchar">
+        <constraints nullable="false" />
+      </column>
+      <column name="reference" type="varchar">
+        <constraints nullable="false" />
+      </column>
+      <column name="customer_reference" type="varchar">
+        <constraints nullable="true" />
+      </column>
+      <column name="status" type="varchar">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+  </changeSet>
+
+</databaseChangeLog>

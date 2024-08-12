@@ -1,0 +1,14 @@
+logging:
+  level:
+    liquibase: INFO
+    org.springframework.jdbc: DEBUG
+    org.bseber: DEBUG
+
+spring:
+  web:
+    resources:
+      chain:
+        cache: false
+        strategy:
+          content:
+            enabled: false

@@ -1,0 +1,27 @@
+spring:
+  messages:
+    fallback-to-system-locale: false
+  web:
+    resources:
+      cache:
+        cachecontrol:
+          cache-public: true
+          cache-private: true
+          max-age: 365d
+      chain:
+        cache: true
+        strategy:
+          content:
+            enabled: true
+            paths: /css/**.css
+  datasource:
+    url: jdbc:postgresql://localhost:5432/haushalt
+    username: haushalt
+    password: secret
+  liquibase:
+    change-log: classpath:/db/changelog/changelog-root.xml
+
+server:
+  compression:
+    min-response-size: 1024
+    enabled: true

@@ -1,0 +1,126 @@
+.text-center {
+  text-align: center !important;
+}
+.text-left {
+  text-align: left !important;
+}
+.text-right {
+  text-align: right !important;
+}
+
+.text-base {
+  font-size: 1rem !important;
+}
+
+.font-bold {
+  font-weight: 600 !important;
+}
+
+.no-wrap {
+  white-space: nowrap !important;
+}
+.tabular-nums {
+  font-variant-numeric: tabular-nums !important;
+}
+
+.max-w-32 {
+  max-width: calc(var(--gap-4) * 32) !important;
+}
+.max-w-64 {
+  max-width: calc(var(--gap-4) * 64) !important;
+}
+
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border-width: 0 !important;
+}
+
+.ml-1 {
+  margin-left: var(--gap) !important;
+}
+.ml-auto {
+  margin-left: auto !important;
+}
+.mt-2 {
+  margin-top: var(--gap-2) !important;
+}
+.mt-8 {
+  margin-top: var(--gap-8) !important;
+}
+
+.p-4 {
+  padding: var(--gap-4) !important;
+}
+.pr-4 {
+  padding-right: var(--gap-4) !important;
+}
+.pr-5 {
+  padding-right: var(--gap-5) !important;
+}
+.pr-6 {
+  padding-right: var(--gap-6) !important;
+}
+
+.bg-white {
+  background-color: white !important;
+}
+.bg-body {
+  background-color: var(--background-color) !important;
+}
+
+.flex {
+  display: flex !important;
+}
+.flex-col {
+  flex-direction: column !important;
+}
+.items-center {
+  align-items: center !important;
+}
+.items-end {
+  align-items: flex-end !important;
+}
+.justify-end {
+  justify-content: flex-end !important;
+}
+.justify-between {
+  justify-content: space-between !important;
+}
+.justify-self-end {
+  justify-self: flex-end !important;
+}
+.flex-1 {
+  flex-grow: 1 !important;
+}
+
+.gap-1 {
+  gap: var(--gap) !important;
+}
+.gap-2 {
+  gap: var(--gap-2) !important;
+}
+.gap-2 {
+  gap: var(--gap-3) !important;
+}
+.gap-4 {
+  gap: var(--gap-4) !important;
+}
+.gap-5 {
+  gap: var(--gap-5) !important;
+}
+.gap-6 {
+  gap: var(--gap-6) !important;
+}
+.gap-7 {
+  gap: var(--gap-7) !important;
+}
+.gap-8 {
+  gap: var(--gap-8) !important;
+}

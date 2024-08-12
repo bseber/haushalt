@@ -1,0 +1,40 @@
+[data-color-theme="dark"] {
+  table {
+    td > input,
+    td > select {
+      width: 100%;
+    }
+  }
+
+  .transaktion-import-preview_hcell_booking-date,
+  .transaktion-import-preview_hcell_value-date,
+  .transaktion-import-preview_cell_booking-date,
+  .transaktion-import-preview_cell_value-date {
+    width: 9rem;
+  }
+
+  .transaktion-import-preview_hcell_status,
+  .transaktion-import-preview_cell_status {
+    width: 9rem;
+  }
+
+  .transaktion-import-preview_hcell_type,
+  .transaktion-import-preview_cell_type {
+    width: 9rem;
+  }
+
+  .transaktion-import-preview_hcell_amount,
+  .transaktion-import-preview_cell_amount {
+    width: 9.5rem;
+  }
+
+  .transaktion-import-preview_hcell_amount {
+    padding-right: calc(var(--gap) * 6);
+  }
+
+  .transaktion-import-preview_cell_amount {
+    input {
+      width: 8rem;
+    }
+  }
+}

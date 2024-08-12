@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="de">
+  <head
+    th:replace="~{_layout::head(title=~{::title}, preload=~{::preload}, scriptsDefer=~{::scriptsDefer}, styles=~{::styles})}"
+  >
+    <title>Haushalt - Transaktionen</title>
+    <th:block th:fragment="styles">
+      <link rel="stylesheet" th:href="@{/css/transactions.css}" />
+    </th:block>
+    <th:block th:fragment="preload">
+      <link
+        rel="preload"
+        th:replace="~{fragments/asset-dependency-preload::links('transactions.js')}"
+      />
+    </th:block>
+    <th:block th:fragment="scriptsDefer">
+      <script defer type="module" asset:src="transactions.js"></script>
+    </th:block>
+  </head>
+  <body th:replace="~{_layout::body(~{::main})}">
+    <main class="transactions-view p-4">
+      <h1 class="transactions-view__title">Transaktionen</h1>
+      <form
+        action="#"
+        th:action="@{/transactions}"
+        th:object="${filter}"
+        method="get"
+        class="transactions-view__filter flex items-center gap-1"
+      >
+        <label for="filter-from-input">von</label>
+        <input id="filter-from-input" type="date" th:field="*{from}" />
+        <label for="filter-to-input">bis</label>
+        <input id="filter-to-input" type="date" th:field="*{to}" />
+        <button type="submit">Aktualisieren</button>
+      </form>
+
+      <div class="transactions-view__import">
+        <a class="button-secondary" href="#" th:href="@{/transactions/import}"
+          >Importieren</a
+        >
+      </div>
+
+      <div class="transactions-view__charts">
+        <h2>Ausgaben</h2>
+        <div style="width: 100%">
+          <script id="expenses-chart-data" th:inline="javascript">
+            window.haushalt = window.haushalt ?? {};
+            window.haushalt.expenses = window.haushalt.expenses ?? {};
+            window.haushalt.expenses.chart =
+              window.haushalt.expenses.chart ?? {};
+            window.haushalt.expenses.chart.data =
+              /*[[${expensesChartData}]]*/ [];
+          </script>
+          <canvas id="expenses-chart-canvas"></canvas>
+        </div>
+      </div>
+
+      <div class="transactions-view__transactions flex gap-8">
+        <div
+          th:if="${not #lists.isEmpty(transactions)}"
+          class="max-w-32 flex flex-col gap-1"
+        >
+          <div
+            th:each="transaction : ${transactions}"
+            class="transaction-card flex items-center gap-4"
+          >
+            <span class="flex flex-col">
+              <span class="font-bold" th:text="${transaction.payee}"></span>
+              <span th:text="${transaction.reference}"></span>
+            </span>
+            <span
+              class="ml-auto"
+              th:text="${#numbers.formatCurrency(transaction.amount)}"
+            ></span>
+          </div>
+        </div>
+      </div>
+
+      <!--      <div class="mt-8">-->
+      <!--        <h2>Alle Transaktionen</h2>-->
+      <!--        <p th:if="${#lists.isEmpty(transactions)}">-->
+      <!--          Noch keine Transaktionen importiert.-->
+      <!--        </p>-->
+      <!--        <table th:if="${not #lists.isEmpty(transactions)}">-->
+      <!--          <thead class="sticky bg-body">-->
+      <!--            <tr>-->
+      <!--              <th-->
+      <!--                class="text-left"-->
+      <!--                th:text="#{transactions.import.preview.booking-date}"-->
+      <!--              >-->
+      <!--                Buchung-->
+      <!--              </th>-->
+      <!--              <th-->
+      <!--                class="text-left"-->
+      <!--                th:text="#{transactions.import.preview.value-date}"-->
+      <!--              >-->
+      <!--                Wertstellung-->
+      <!--              </th>-->
+      <!--              <th-->
+      <!--                class="text-left"-->
+      <!--                th:text="#{transactions.import.preview.status}"-->
+      <!--              >-->
+      <!--                Status-->
+      <!--              </th>-->
+      <!--              <th-->
+      <!--                class="text-left"-->
+      <!--                th:text="#{transactions.import.preview.status}"-->
+      <!--              >-->
+      <!--                Status-->
+      <!--              </th>-->
+      <!--              <th-->
+      <!--                class="text-left"-->
+      <!--                th:text="#{transactions.import.preview.payer}"-->
+      <!--              >-->
+      <!--                Zahlungspflichtige*r-->
+      <!--              </th>-->
+      <!--              <th-->
+      <!--                class="text-left"-->
+      <!--                th:text="#{transactions.import.preview.payee}"-->
+      <!--              >-->
+      <!--                Zahlungsempfänger*in-->
+      <!--              </th>-->
+      <!--              <th-->
+      <!--                class="text-left"-->
+      <!--                th:text="#{transactions.import.preview.reference}"-->
+      <!--              >-->
+      <!--                Verwendungszweck-->
+      <!--              </th>-->
+      <!--              <th-->
+      <!--                class="text-left"-->
+      <!--                th:text="#{transactions.import.preview.revenue-type}"-->
+      <!--              >-->
+      <!--                Umsatztyp-->
+      <!--              </th>-->
+      <!--              <th-->
+      <!--                class="text-left"-->
+      <!--                th:text="#{transactions.import.preview.iban}"-->
+      <!--              >-->
+      <!--                IBAN-->
+      <!--              </th>-->
+      <!--              <th class="text-right no-wrap pr-4">-->
+      <!--                <th:block th:text="#{transactions.import.preview.amount}"-->
+      <!--                  >Betrag</th:block-->
+      <!--                >-->
+      <!--              </th>-->
+      <!--              <th-->
+      <!--                class="text-left"-->
+      <!--                th:text="#{transactions.import.preview.customer-reference}"-->
+      <!--              >-->
+      <!--                Kundenreferenz-->
+      <!--              </th>-->
+      <!--            </tr>-->
+      <!--          </thead>-->
+      <!--          <tbody>-->
+      <!--            <tr th:each="transaction : ${transactions}">-->
+      <!--              <td-->
+      <!--                class="text-left"-->
+      <!--                th:text="${#temporals.format(transaction.bookingDate, userDatePattern)}"-->
+      <!--              >-->
+      <!--                09.08.2024-->
+      <!--              </td>-->
+      <!--              <td-->
+      <!--                class="text-left"-->
+      <!--                th:text="${#temporals.format(transaction.valueDate, userDatePattern)}"-->
+      <!--              >-->
+      <!--                09.08.2024-->
+      <!--              </td>-->
+      <!--              <td-->
+      <!--                class="text-left"-->
+      <!--                th:text="${#messages.msg('transaction.revenue-type.' + transaction.revenueType)}"-->
+      <!--              >-->
+      <!--                Ausgang-->
+      <!--              </td>-->
+      <!--              <td-->
+      <!--                class="text-left"-->
+      <!--                th:text="${#messages.msg('transaction.procedure.' + transaction.procedure)}"-->
+      <!--              >-->
+      <!--                Überweisung-->
+      <!--              </td>-->
+      <!--              <td class="text-left" th:text="${transaction.payer}">-->
+      <!--                Auftraggeber-->
+      <!--              </td>-->
+      <!--              <td class="text-left" th:text="${transaction.payee}">-->
+      <!--                Empfänger-->
+      <!--              </td>-->
+      <!--              <td class="text-left" th:text="${transaction.reference}">-->
+      <!--                Verwendungszweck-->
+      <!--              </td>-->
+      <!--              <td-->
+      <!--                class="text-left"-->
+      <!--                th:text="${#messages.msg('transaction.revenue-type.' + transaction.revenueType)}"-->
+      <!--              >-->
+      <!--                Eingang-->
+      <!--              </td>-->
+      <!--              <td class="text-left" th:text="${transaction.iban}">IBAN</td>-->
+      <!--              <td-->
+      <!--                class="text-right"-->
+      <!--                th:text="${#numbers.formatCurrency(transaction.amount)}"-->
+      <!--              >-->
+      <!--                13,37 €-->
+      <!--              </td>-->
+      <!--              <td-->
+      <!--                class="text-left"-->
+      <!--                th:text="${transaction.customerReference}"-->
+      <!--              ></td>-->
+      <!--            </tr>-->
+      <!--          </tbody>-->
+      <!--        </table>-->
+      <!--      </div>-->
+    </main>
+  </body>
+</html>
