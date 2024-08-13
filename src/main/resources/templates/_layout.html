@@ -29,15 +29,15 @@
       type="text/css"
       th:href="@{/css/02-components.css}"
     />
-    <link rel="stylesheet" type="text/css" th:href="@{/css/03-utility.css}" />
     <th:block th:replace="${styles}"></th:block>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/03-utility.css}" />
     <th:block th:replace="${preload}"></th:block>
 
     <th:block th:replace="${scriptsDefer}"></th:block>
     <th:block th:replace="${prefetchOrPrerender}"></th:block>
     <th:block th:replace="${additional}"></th:block>
   </head>
-  <body th:fragment="body(content)" data-color-theme="dark">
+  <body th:fragment="body(content)" data-theme="dark">
     <main th:replace="${content}">content block</main>
   </body>
 </html>
