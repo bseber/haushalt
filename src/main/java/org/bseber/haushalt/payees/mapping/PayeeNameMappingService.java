@@ -14,7 +14,7 @@ import static java.util.stream.Collectors.toMap;
 import static java.util.stream.StreamSupport.stream;
 
 @Service
-class PayeeNameMappingService {
+public class PayeeNameMappingService {
 
     private static final Logger LOG = LoggerFactory.getLogger(lookup().lookupClass());
 

@@ -9,8 +9,6 @@ import java.time.Month;
 import java.util.Currency;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.StreamSupport;
 
 import static java.time.temporal.TemporalAdjusters.firstDayOfMonth;
 import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
@@ -39,13 +37,13 @@ public class TransactionService {
         return new TransactionBucket(transactions);
     }
 
-    public List<Transaction> addTransactions(List<Transaction> transactions) {
+    public void addTransactions(List<Transaction> transactions) {
 
         final List<TransactionEntity> entities = transactions.stream()
             .map(TransactionService::toEntity)
             .toList();
 
-        return toList(repository.saveAll(entities), TransactionService::toTransaction);
+        repository.saveAll(entities);
     }
 
     private static Transaction toTransaction(TransactionEntity entity) {
@@ -82,9 +80,5 @@ public class TransactionService {
         entity.setCustomerReference(transaction.customerReference());
         entity.setStatus(transaction.status());
         return entity;
-    }
-
-    private static <T, R> List<R> toList(Iterable<T> iterable, Function<T, R> mapper) {
-        return StreamSupport.stream(iterable.spliterator(), false).map(mapper).toList();
     }
 }
