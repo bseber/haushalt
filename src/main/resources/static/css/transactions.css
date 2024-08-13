@@ -36,10 +36,15 @@
 
 .transaction-card {
   transition: background-color ease-in-out 150ms;
-  background-color: var(--color-slate-800);
   border-radius: 6px;
   padding: var(--gap-4);
-  &:hover {
-    background-color: var(--color-slate-700);
+}
+
+[data-theme="dark"] {
+  .transaction-card {
+    background-color: var(--color-slate-800);
+    &:hover {
+      background-color: var(--color-slate-700);
+    }
   }
 }

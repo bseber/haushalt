@@ -1,48 +1,61 @@
-[data-color-theme="dark"] {
-  table {
-    border-collapse: collapse;
-    thead {
-      th {
-        padding: var(--gap);
-        color: var(--color-slate-200);
-        text-transform: uppercase;
-        font-size: 0.8em;
-      }
-      &.sticky {
-        position: sticky;
-        top: 0;
-      }
+table {
+  border-collapse: collapse;
+  thead {
+    th {
+      padding: var(--gap);
+      text-transform: uppercase;
+      font-size: 0.8em;
     }
-    tbody {
-      td {
-        padding: 0 calc(var(--gap) / 2);
-      }
-    }
-    &.full-width {
-      width: 100%;
+    &.sticky {
+      position: sticky;
+      top: 0;
     }
   }
+  tbody {
+    td {
+      padding: 0 calc(var(--gap) / 2);
+    }
+  }
+  &.full-width {
+    width: 100%;
+  }
+}
 
+[data-theme="dark"] {
+  table {
+    thead {
+      th {
+        color: var(--color-slate-200);
+      }
+    }
+  }
+}
+
+button,
+a[class*="button"] {
+  cursor: pointer;
+  padding: calc(var(--gap) * 2) calc(var(--gap) * 3);
+  border-radius: 3px;
+  transition: all ease-in-out 150ms;
+  font-weight: 500;
+  &:is(a) {
+    display: inline-block;
+    text-decoration: none;
+    color: unset;
+  }
+  &:active {
+    transform: translateY(1px);
+  }
+}
+
+[data-theme="dark"] {
   button,
   a[class*="button"] {
-    cursor: pointer;
-    padding: calc(var(--gap) * 2) calc(var(--gap) * 3);
     color: var(--color-violet-50);
     background-color: var(--color-violet-700);
     border: 1px solid var(--color-violet-900);
-    border-radius: 3px;
-    transition: all ease-in-out 150ms;
-    font-weight: 500;
-    &:is(a) {
-      display: inline-block;
-      text-decoration: none;
-      color: unset;
-    }
     &:hover {
       background-color: var(--color-violet-600);
-    }
-    &:active {
-      transform: translateY(1px);
     }
 
     &.button-secondary {
@@ -54,20 +67,26 @@
       }
     }
   }
+}
 
+input,
+select {
+  border-radius: 3px;
+  padding: calc(var(--gap) / 2) var(--gap);
+
+  &:is([type="file"]) {
+    color: unset;
+    background-color: unset;
+    border: unset;
+    padding: unset;
+  }
+}
+
+[data-theme="dark"] {
   input,
   select {
     color: var(--color-slate-400);
     background-color: var(--color-slate-900);
     border: 1px solid var(--color-slate-950);
-    border-radius: 3px;
-    padding: calc(var(--gap) / 2) var(--gap);
-
-    &:is([type="file"]) {
-      color: unset;
-      background-color: unset;
-      border: unset;
-      padding: unset;
-    }
   }
 }

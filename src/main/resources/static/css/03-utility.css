@@ -1,126 +1,166 @@
-.text-center {
-  text-align: center !important;
-}
-.text-left {
-  text-align: left !important;
-}
-.text-right {
-  text-align: right !important;
-}
+/*
+ * use `body` selector to make utilities selector more explicit and to outweigh [data-theme] selectors.
+ *
+ * actually we have to add additional `[data-theme=dark] .my-util {}` classes I think?
+ * especially for colors, as we want color-1 for light theme and color-2 for dark theme
+ * <button class="color-1 dark:color-2">
+ *
+ * no... I do not want to use tailwind for that...
+ */
+body {
+  .text-center {
+    text-align: center;
+  }
 
-.text-base {
-  font-size: 1rem !important;
-}
+  .text-left {
+    text-align: left;
+  }
 
-.font-bold {
-  font-weight: 600 !important;
-}
+  .text-right {
+    text-align: right;
+  }
 
-.no-wrap {
-  white-space: nowrap !important;
-}
-.tabular-nums {
-  font-variant-numeric: tabular-nums !important;
-}
+  .text-base {
+    font-size: 1rem;
+  }
 
-.max-w-32 {
-  max-width: calc(var(--gap-4) * 32) !important;
-}
-.max-w-64 {
-  max-width: calc(var(--gap-4) * 64) !important;
-}
+  .font-bold {
+    font-weight: 600;
+  }
 
-.sr-only {
-  position: absolute !important;
-  width: 1px !important;
-  height: 1px !important;
-  padding: 0 !important;
-  margin: -1px !important;
-  overflow: hidden !important;
-  clip: rect(0, 0, 0, 0) !important;
-  white-space: nowrap !important;
-  border-width: 0 !important;
-}
+  .no-wrap {
+    white-space: nowrap;
+  }
 
-.ml-1 {
-  margin-left: var(--gap) !important;
-}
-.ml-auto {
-  margin-left: auto !important;
-}
-.mt-2 {
-  margin-top: var(--gap-2) !important;
-}
-.mt-8 {
-  margin-top: var(--gap-8) !important;
-}
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
 
-.p-4 {
-  padding: var(--gap-4) !important;
-}
-.pr-4 {
-  padding-right: var(--gap-4) !important;
-}
-.pr-5 {
-  padding-right: var(--gap-5) !important;
-}
-.pr-6 {
-  padding-right: var(--gap-6) !important;
-}
+  .max-w-32 {
+    max-width: calc(var(--gap-4) * 32);
+  }
 
-.bg-white {
-  background-color: white !important;
-}
-.bg-body {
-  background-color: var(--background-color) !important;
-}
+  .max-w-64 {
+    max-width: calc(var(--gap-4) * 64);
+  }
 
-.flex {
-  display: flex !important;
-}
-.flex-col {
-  flex-direction: column !important;
-}
-.items-center {
-  align-items: center !important;
-}
-.items-end {
-  align-items: flex-end !important;
-}
-.justify-end {
-  justify-content: flex-end !important;
-}
-.justify-between {
-  justify-content: space-between !important;
-}
-.justify-self-end {
-  justify-self: flex-end !important;
-}
-.flex-1 {
-  flex-grow: 1 !important;
-}
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
 
-.gap-1 {
-  gap: var(--gap) !important;
-}
-.gap-2 {
-  gap: var(--gap-2) !important;
-}
-.gap-2 {
-  gap: var(--gap-3) !important;
-}
-.gap-4 {
-  gap: var(--gap-4) !important;
-}
-.gap-5 {
-  gap: var(--gap-5) !important;
-}
-.gap-6 {
-  gap: var(--gap-6) !important;
-}
-.gap-7 {
-  gap: var(--gap-7) !important;
-}
-.gap-8 {
-  gap: var(--gap-8) !important;
+  .ml-1 {
+    margin-left: var(--gap);
+  }
+
+  .ml-auto {
+    margin-left: auto;
+  }
+
+  .mt-2 {
+    margin-top: var(--gap-2);
+  }
+
+  .mt-8 {
+    margin-top: var(--gap-8);
+  }
+
+  .p-4 {
+    padding: var(--gap-4);
+  }
+
+  .pr-4 {
+    padding-right: var(--gap-4);
+  }
+
+  .pr-5 {
+    padding-right: var(--gap-5);
+  }
+
+  .pr-6 {
+    padding-right: var(--gap-6);
+  }
+
+  .bg-white {
+    background-color: white;
+  }
+
+  .bg-body {
+    background-color: var(--background-color);
+  }
+
+  .flex {
+    display: flex;
+  }
+
+  .flex-col {
+    flex-direction: column;
+  }
+
+  .items-center {
+    align-items: center;
+  }
+
+  .items-end {
+    align-items: flex-end;
+  }
+
+  .justify-end {
+    justify-content: flex-end;
+  }
+
+  .justify-between {
+    justify-content: space-between;
+  }
+
+  .justify-self-end {
+    justify-self: flex-end;
+  }
+
+  .flex-1 {
+    flex-grow: 1;
+  }
+
+  .text-violet-800 {
+    color: var(--color-slate-800);
+  }
+
+  .gap-1 {
+    gap: var(--gap);
+  }
+
+  .gap-2 {
+    gap: var(--gap-2);
+  }
+
+  .gap-2 {
+    gap: var(--gap-3);
+  }
+
+  .gap-4 {
+    gap: var(--gap-4);
+  }
+
+  .gap-5 {
+    gap: var(--gap-5);
+  }
+
+  .gap-6 {
+    gap: var(--gap-6);
+  }
+
+  .gap-7 {
+    gap: var(--gap-7);
+  }
+
+  .gap-8 {
+    gap: var(--gap-8);
+  }
 }
