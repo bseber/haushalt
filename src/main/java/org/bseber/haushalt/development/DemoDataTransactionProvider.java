@@ -77,7 +77,7 @@ class DemoDataTransactionProvider {
             // TODO also create AMOUNT_COMING_IN
             Transaction.RevenueType.AMOUNT_COMING_OUT,
             new Money(BigDecimal.valueOf(random(500)).negate(), EUR),
-            "",
+            "awesome reference text",
             "",
             Transaction.Status.EXPENSED
         );
