@@ -435,3 +435,10 @@ body {
   color: var(--color-slate-50);
   --background-color: var(--color-slate-950);
 }
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}

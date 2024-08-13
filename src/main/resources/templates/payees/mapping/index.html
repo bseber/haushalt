@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="de">
+  <head
+    th:replace="~{_layout::head(title=~{::title}, preload=~{::preload}, scriptsDefer=~{::scriptsDefer}, styles=~{::styles})}"
+  >
+    <title>Haushalt - Zahlungsempfänger</title>
+    <th:block th:fragment="styles">
+      <link rel="stylesheet" th:href="@{/css/payee-name-mapping.css}" />
+    </th:block>
+    <th:block th:fragment="preload"> </th:block>
+    <th:block th:fragment="scriptsDefer"> </th:block>
+  </head>
+  <body th:replace="~{_layout::body(~{::content})}">
+    <th:block th:ref="content">
+      <div th:replace="~{_navigation::top('Zahlungsempfänger', ~{})}"></div>
+
+      <main class="layout__content p-4">
+        <form
+          action="#"
+          th:action="@{/payees/mapping/name}"
+          method="post"
+          th:object="${nameMapping}"
+          class="payee-name-mapping"
+        >
+          <div
+            th:each="mapping : ${nameMapping.mappings}"
+            th:with="i=${mappingStat.index}"
+            class="payee-name-mapping__card"
+          >
+            <label
+              for="payee-name"
+              th:for="${'payee-name-' + mappingStat.index}"
+              class="payee-name-mapping__card__label"
+              >Empfänger</label
+            >
+            <input
+              id="payee-name"
+              th:id="${'payee-name-' + mappingStat.index}"
+              type="text"
+              th:field="*{mappings[__${i}__].originalName}"
+              readonly
+            />
+            <label
+              for="payee-name-mapped"
+              th:for="${'payee-name-mapped-' + mappingStat.index}"
+              class="payee-name-mapping__card__label"
+              >Gemapped zu</label
+            >
+            <input
+              id="payee-name-mapped"
+              th:id="${'payee-name-mapped-' + mappingStat.index}"
+              type="text"
+              th:field="*{mappings[__${i}__].mappedName}"
+            />
+          </div>
+          <div>
+            <button class="button" type="submit">Änderungen übernehmen</button>
+          </div>
+        </form>
+      </main>
+    </th:block>
+  </body>
+</html>

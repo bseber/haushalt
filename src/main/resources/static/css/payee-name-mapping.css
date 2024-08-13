@@ -1,0 +1,39 @@
+.layout__content {
+  overflow: auto;
+}
+
+.payee-name-mapping > * ~ * {
+  margin-top: var(--gap-4);
+}
+
+.payee-name-mapping__card {
+  display: grid;
+  row-gap: var(--gap);
+  column-gap: var(--gap-4);
+  :nth-child(1) {
+    grid-row: 1;
+    grid-column: 1;
+  }
+  :nth-child(2) {
+    grid-row: 2;
+    grid-column: 1;
+  }
+  :nth-child(3) {
+    grid-row: 1;
+    grid-column: 2;
+  }
+  :nth-child(4) {
+    grid-row: 2;
+    grid-column: 2;
+  }
+}
+
+.payee-name-mapping__card__label {
+  font-size: 0.95em;
+}
+
+[data-theme="dark"] {
+  .payee-name-mapping__card__label {
+    color: var(--color-slate-600);
+  }
+}

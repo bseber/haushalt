@@ -10,9 +10,23 @@
         <th:block th:replace="${nextToTitle}"></th:block>
       </div>
       <div class="layout__buttons">
-        <a class="button-secondary" href="#" th:href="@{/transactions/import}">
-          Importieren
-        </a>
+        <ul class="navigation">
+          <li>
+            <a class="navigation__icon-button" href="#" th:href="@{/payees}">
+              <span class="sr-only">Zahlungsempfänger</span>
+              <svg th:replace="~{icons/settings-2::svg}"></svg>
+            </a>
+          </li>
+          <li>
+            <a
+              class="button-secondary"
+              href="#"
+              th:href="@{/transactions/import}"
+            >
+              Importieren
+            </a>
+          </li>
+        </ul>
       </div>
     </th:block>
   </body>

@@ -1,0 +1,23 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+  <changeSet id="1.0.0-payee-name-mapping" author="bseber">
+    <createTable tableName="payee_name_mapping">
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="original_name" type="varchar">
+        <constraints nullable="false"/>
+      </column>
+      <column name="mapped_name" type="varchar">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <addUniqueConstraint tableName="payee_name_mapping"
+                         columnNames="original_name"
+                         constraintName="UNIQUE_NAME_MAPPING"/>
+  </changeSet>
+
+</databaseChangeLog>
