@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Navigation</title>
+  </head>
+  <body>
+    <th:block th:fragment="top(title, nextToTitle)">
+      <h1 class="layout__title" th:text="${title}">Titel</h1>
+      <div class="layout__next-to-title">
+        <th:block th:replace="${nextToTitle}"></th:block>
+      </div>
+      <div class="layout__buttons">
+        <a class="button-secondary" href="#" th:href="@{/transactions/import}">
+          Importieren
+        </a>
+      </div>
+    </th:block>
+  </body>
+</html>
