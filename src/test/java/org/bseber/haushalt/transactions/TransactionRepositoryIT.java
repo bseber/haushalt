@@ -14,6 +14,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -36,6 +37,50 @@ class TransactionRepositoryIT {
     private PayeeNameMappingService payeeNameMappingService;
 
     @Test
+    void ensureFindProjectionById() {
+
+        final LocalDate bookingDate = LocalDate.of(2024, 8, 10);
+
+        final TransactionEntity entity = anyTransactionEntity();
+        entity.setBookingDate(bookingDate);
+        entity.setPayee("Amazon Blubb di hubb du dubb");
+
+        final TransactionEntity saved = sut.save(entity);
+
+        final Optional<TransactionEntityProjection> actual = sut.findProjectionById(saved.getId());
+        assertThat(actual).isPresent();
+
+        final TransactionEntityProjection actualProjection = actual.get();
+        assertThat(actualProjection.getId()).isEqualTo(saved.getId());
+        assertThat(actualProjection.getPayee()).isEqualTo("Amazon Blubb di hubb du dubb");
+        assertThat(actualProjection.getMappedPayee()).isEmpty();
+    }
+
+    @Test
+    void ensureFindProjectionByIdWithMappedPayee() {
+
+        final LocalDate bookingDate = LocalDate.of(2024, 8, 10);
+
+        final TransactionEntity entity = anyTransactionEntity();
+        entity.setBookingDate(bookingDate);
+        entity.setPayee("Amazon Blubb di hubb du dubb");
+
+        final TransactionEntity saved = sut.save(entity);
+
+        payeeNameMappingService.updateNameMappings(List.of(
+            new PayeeNameMapping("Amazon Blubb di hubb du dubb", "Amazon"))
+        );
+
+        final Optional<TransactionEntityProjection> actual = sut.findProjectionById(saved.getId());
+        assertThat(actual).isPresent();
+
+        final TransactionEntityProjection actualProjection = actual.get();
+        assertThat(actualProjection.getId()).isEqualTo(saved.getId());
+        assertThat(actualProjection.getPayee()).isEqualTo("Amazon Blubb di hubb du dubb");
+        assertThat(actualProjection.getMappedPayee()).isEqualTo("Amazon");
+    }
+
+    @Test
     void ensureProjectionWithMappedPayee() {
 
         final LocalDate bookingDate = LocalDate.of(2024, 8, 10);
@@ -52,9 +97,10 @@ class TransactionRepositoryIT {
 
         assertThat(sut.findAll()).hasSize(1);
 
-        final List<TransactionEntity> actual = sut.findAllByBookingDateAfterAndBookingDateBefore(bookingDate.minusDays(1), bookingDate.plusDays(1));
+        final List<TransactionEntityProjection> actual = sut.findAllByBookingDateAfterAndBookingDateBefore(bookingDate.minusDays(1), bookingDate.plusDays(1));
         assertThat(actual).hasSize(1);
-        assertThat(actual.get(0).getPayee()).isEqualTo("Amazon");
+        assertThat(actual.get(0).getPayee()).isEqualTo("Amazon Blubb di hubb du dubb");
+        assertThat(actual.get(0).getMappedPayee()).isEqualTo("Amazon");
     }
 
     @Test
@@ -70,7 +116,7 @@ class TransactionRepositoryIT {
 
         assertThat(sut.findAll()).hasSize(1);
 
-        final List<TransactionEntity> actual = sut.findAllByBookingDateAfterAndBookingDateBefore(bookingDate.minusDays(1), bookingDate.plusDays(1));
+        final List<TransactionEntityProjection> actual = sut.findAllByBookingDateAfterAndBookingDateBefore(bookingDate.minusDays(1), bookingDate.plusDays(1));
         assertThat(actual).hasSize(1);
         assertThat(actual.get(0).getPayee()).isEqualTo("Amazon Blubb di hubb du dubb");
     }

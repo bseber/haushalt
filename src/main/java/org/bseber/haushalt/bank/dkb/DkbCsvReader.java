@@ -6,6 +6,7 @@ import org.bseber.haushalt.core.IBAN;
 import org.bseber.haushalt.core.Money;
 import org.bseber.haushalt.csv.CsvReader;
 import org.bseber.haushalt.csv.CsvRow;
+import org.bseber.haushalt.transactions.NewTransaction;
 import org.bseber.haushalt.transactions.Transaction;
 import org.bseber.haushalt.transactions.TransactionCsvReader;
 import org.slf4j.Logger;
@@ -45,7 +46,7 @@ class DkbCsvReader implements TransactionCsvReader {
     }
 
     @Override
-    public List<Transaction> readCsvFile(File file) throws IOException {
+    public List<NewTransaction> readCsvFile(File file) throws IOException {
         return csvReader.readRows(file, DELIMITER).stream()
             .map(DkbCsvReader::toDkbTransaktion)
             .filter(Objects::nonNull)
@@ -121,8 +122,8 @@ class DkbCsvReader implements TransactionCsvReader {
         }
     }
 
-    private static Transaction toTransaction(DkbCsvTransaktion dkbTransaktion) {
-        return new Transaction(
+    private static NewTransaction toTransaction(DkbCsvTransaktion dkbTransaktion) {
+        return new NewTransaction(
             dkbTransaktion.bookingDate(),
             dkbTransaktion.valueDate(),
             toProcedure(dkbTransaktion),

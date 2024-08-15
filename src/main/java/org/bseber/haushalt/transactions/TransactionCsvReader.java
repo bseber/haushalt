@@ -8,5 +8,5 @@ public interface TransactionCsvReader {
 
     boolean supports(File file);
 
-    List<Transaction> readCsvFile(File file) throws IOException;
+    List<NewTransaction> readCsvFile(File file) throws IOException;
 }

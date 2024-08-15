@@ -69,10 +69,10 @@ class TransactionImportController {
     @PostMapping("/csv")
     public String importCsv(@RequestParam("file") MultipartFile multipartFile, RedirectAttributes redirectAttributes) {
 
-        final List<Transaction> transactions = readFile(multipartFile);
-        final List<TransactionDto> dtos = transactions
+        final List<NewTransaction> transactions = readFile(multipartFile);
+        final List<TransactionImportDto> dtos = transactions
             .stream()
-            .map(TransactionController::toViewDto)
+            .map(TransactionImportController::toTransactionImportDto)
             .toList();
 
         redirectAttributes.addFlashAttribute("preview", new ImportPreviewDto(dtos));
@@ -88,7 +88,7 @@ class TransactionImportController {
             return "redirect:/transactions/import/csv";
         }
 
-        final List<Transaction> transactions = dto.getTransactions().stream().map(TransactionImportController::toTransaction).toList();
+        final List<NewTransaction> transactions = dto.getTransactions().stream().map(TransactionImportController::toTransaction).toList();
         transactionService.addTransactions(transactions);
 
         redirectAttributes.addFlashAttribute("importSuccess", true);
@@ -96,7 +96,7 @@ class TransactionImportController {
     }
 
 
-    private List<Transaction> readFile(MultipartFile multipartFile) {
+    private List<NewTransaction> readFile(MultipartFile multipartFile) {
         File file = null;
         try {
             file = toFile(multipartFile);
@@ -110,8 +110,8 @@ class TransactionImportController {
         }
     }
 
-    private static Transaction toTransaction(TransactionDto dto) {
-        return new Transaction(
+    private static NewTransaction toTransaction(TransactionImportDto dto) {
+        return new NewTransaction(
             dto.getBookingDate(),
             Optional.ofNullable(dto.getValueDate()),
             dto.getProcedure(),
@@ -149,5 +149,21 @@ class TransactionImportController {
             .findFirst()
             // currently not expected since DKB is hard coded
             .orElseThrow(() -> new IllegalStateException("Could not find matching CsvReader for file."));
+    }
+
+    private static TransactionImportDto toTransactionImportDto(NewTransaction transaction) {
+        return new TransactionImportDto(
+            transaction.bookingDate(),
+            transaction.valueDate().orElse(null),
+            transaction.procedure(),
+            transaction.payer(),
+            transaction.payee(),
+            transaction.reference(),
+            transaction.revenueType(),
+            transaction.ibanPayee().value(),
+            transaction.amount().amount(),
+            transaction.customerReference(),
+            transaction.status()
+        );
     }
 }

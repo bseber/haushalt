@@ -1,166 +1,163 @@
-/*
- * use `body` selector to make utilities selector more explicit and to outweigh [data-theme] selectors.
- *
- * actually we have to add additional `[data-theme=dark] .my-util {}` classes I think?
- * especially for colors, as we want color-1 for light theme and color-2 for dark theme
- * <button class="color-1 dark:color-2">
- *
- * no... I do not want to use tailwind for that...
- */
-body {
-  .text-center {
-    text-align: center;
-  }
+.text-sm {
+  font-size: 0.875rem;
+}
 
-  .text-left {
-    text-align: left;
-  }
+.text-center {
+  text-align: center;
+}
 
-  .text-right {
-    text-align: right;
-  }
+.text-left {
+  text-align: left;
+}
 
-  .text-base {
-    font-size: 1rem;
-  }
+.text-right {
+  text-align: right;
+}
 
-  .font-bold {
-    font-weight: 600;
-  }
+.text-base {
+  font-size: 1rem;
+}
 
-  .no-wrap {
-    white-space: nowrap;
-  }
+.font-bold {
+  font-weight: 600;
+}
 
-  .tabular-nums {
-    font-variant-numeric: tabular-nums;
-  }
+.no-wrap {
+  white-space: nowrap;
+}
 
-  .max-w-32 {
-    max-width: calc(var(--gap-4) * 32);
-  }
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
 
-  .max-w-64 {
-    max-width: calc(var(--gap-4) * 64);
-  }
+.max-w-32 {
+  max-width: calc(var(--gap-4) * 32);
+}
 
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border-width: 0;
-  }
+.max-w-64 {
+  max-width: calc(var(--gap-4) * 64);
+}
 
-  .ml-1 {
-    margin-left: var(--gap);
-  }
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
 
-  .ml-auto {
-    margin-left: auto;
-  }
+.ml-1 {
+  margin-left: var(--gap);
+}
 
-  .mt-2 {
-    margin-top: var(--gap-2);
-  }
+.ml-auto {
+  margin-left: auto;
+}
 
-  .mt-8 {
-    margin-top: var(--gap-8);
-  }
+.mt-2 {
+  margin-top: var(--gap-2);
+}
 
-  .p-4 {
-    padding: var(--gap-4);
-  }
+.mt-8 {
+  margin-top: var(--gap-8);
+}
 
-  .pr-4 {
-    padding-right: var(--gap-4);
-  }
+.p-4 {
+  padding: var(--gap-4);
+}
 
-  .pr-5 {
-    padding-right: var(--gap-5);
-  }
+.pr-4 {
+  padding-right: var(--gap-4);
+}
 
-  .pr-6 {
-    padding-right: var(--gap-6);
-  }
+.pr-5 {
+  padding-right: var(--gap-5);
+}
 
-  .bg-white {
-    background-color: white;
-  }
+.pr-6 {
+  padding-right: var(--gap-6);
+}
 
-  .bg-body {
-    background-color: var(--background-color);
-  }
+.bg-white {
+  background-color: white;
+}
 
-  .flex {
-    display: flex;
-  }
+.bg-body {
+  background-color: var(--background-color);
+}
 
-  .flex-col {
-    flex-direction: column;
-  }
+.flex {
+  display: flex;
+}
 
-  .items-center {
-    align-items: center;
-  }
+.flex-col {
+  flex-direction: column;
+}
 
-  .items-end {
-    align-items: flex-end;
-  }
+.items-center {
+  align-items: center;
+}
 
-  .justify-end {
-    justify-content: flex-end;
-  }
+.items-end {
+  align-items: flex-end;
+}
 
-  .justify-between {
-    justify-content: space-between;
-  }
+.justify-end {
+  justify-content: flex-end;
+}
 
-  .justify-self-end {
-    justify-self: flex-end;
-  }
+.justify-between {
+  justify-content: space-between;
+}
 
-  .flex-1 {
-    flex-grow: 1;
-  }
+.justify-self-end {
+  justify-self: flex-end;
+}
 
-  .text-violet-800 {
-    color: var(--color-slate-800);
-  }
+.flex-1 {
+  flex-grow: 1;
+}
 
-  .gap-1 {
-    gap: var(--gap);
-  }
+.text-violet-800 {
+  color: var(--color-slate-800);
+}
 
-  .gap-2 {
-    gap: var(--gap-2);
-  }
+.gap-1 {
+  gap: var(--gap);
+}
 
-  .gap-2 {
-    gap: var(--gap-3);
-  }
+.gap-2 {
+  gap: var(--gap-2);
+}
 
-  .gap-4 {
-    gap: var(--gap-4);
-  }
+.gap-2 {
+  gap: var(--gap-3);
+}
 
-  .gap-5 {
-    gap: var(--gap-5);
-  }
+.gap-4 {
+  gap: var(--gap-4);
+}
 
-  .gap-6 {
-    gap: var(--gap-6);
-  }
+.gap-5 {
+  gap: var(--gap-5);
+}
 
-  .gap-7 {
-    gap: var(--gap-7);
-  }
+.gap-6 {
+  gap: var(--gap-6);
+}
 
-  .gap-8 {
-    gap: var(--gap-8);
-  }
+.gap-7 {
+  gap: var(--gap-7);
+}
+
+.gap-8 {
+  gap: var(--gap-8);
+}
+
+.overflow-auto {
+  overflow: auto;
 }

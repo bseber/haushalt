@@ -1,6 +1,6 @@
 package org.bseber.haushalt.development;
 
-import org.bseber.haushalt.transactions.Transaction;
+import org.bseber.haushalt.transactions.NewTransaction;
 import org.bseber.haushalt.transactions.TransactionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +46,7 @@ class DemoDataCreator {
 
     private void createTransactions(Month month, int amount) {
 
-        final List<Transaction> transactions = IntStream.range(0, amount)
+        final List<NewTransaction> transactions = IntStream.range(0, amount)
             .mapToObj(i -> demoDataTransactionProvider.createRandromTransaction(month)).toList();
 
         transactionService.addTransactions(transactions);

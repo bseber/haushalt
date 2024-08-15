@@ -6,21 +6,21 @@ import java.util.Objects;
 
 class ImportPreviewDto {
 
-    private List<TransactionDto> transactions;
+    private List<TransactionImportDto> transactions;
 
     public ImportPreviewDto() {
         this.transactions = new ArrayList<>();
     }
 
-    public ImportPreviewDto(List<TransactionDto> transactions) {
+    public ImportPreviewDto(List<TransactionImportDto> transactions) {
         this.transactions = transactions;
     }
 
-    public List<TransactionDto> getTransactions() {
+    public List<TransactionImportDto> getTransactions() {
         return transactions;
     }
 
-    public void setTransactions(List<TransactionDto> transactions) {
+    public void setTransactions(List<TransactionImportDto> transactions) {
         this.transactions = transactions;
     }
 

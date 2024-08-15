@@ -54,24 +54,37 @@
           </div>
         </div>
         <div class="transactions-view__transactions flex gap-8">
-          <div
+          <ul
+            th:fragment="transactions"
             th:if="${not #lists.isEmpty(transactions)}"
-            class="max-w-32 flex flex-col gap-1"
+            class="transaction-card-container"
           >
-            <div
-              th:each="transaction : ${transactions}"
-              class="transaction-card flex items-center gap-4"
-            >
-              <span class="flex flex-col">
-                <span class="font-bold" th:text="${transaction.payee}"></span>
-                <span th:text="${transaction.reference}"></span>
-              </span>
-              <span
-                class="ml-auto"
-                th:text="${#numbers.formatCurrency(transaction.amount)}"
-              ></span>
-            </div>
-          </div>
+            <li th:each="transaction : ${transactions}">
+              <a
+                href="#"
+                th:href="@{/transactions/{id} (id=${transaction.id})}"
+                class="transaction-card"
+                th:classappend="${transaction.active ? 'active' : ''}"
+              >
+                <span
+                  class="transaction-card__booking-date"
+                  th:text="${#temporals.format(transaction.bookingDate, 'LONG')}"
+                ></span>
+                <span
+                  class="transaction-card__amount"
+                  th:text="${#numbers.formatCurrency(transaction.amount)}"
+                ></span>
+                <span
+                  class="transaction-card__payee"
+                  th:text="${transaction.payee}"
+                ></span>
+                <span
+                  class="transaction-card__reference"
+                  th:text="${transaction.reference}"
+                ></span>
+              </a>
+            </li>
+          </ul>
         </div>
       </main>
     </th:block>

@@ -5,7 +5,13 @@
   </head>
   <body>
     <th:block th:fragment="top(title, nextToTitle)">
-      <h1 class="layout__title" th:text="${title}">Titel</h1>
+      <div class="layout__title flex items-center gap-2">
+        <a href="/" class="home-link">
+          <svg th:replace="~{icons/landmark::svg}"></svg>
+          <span class="sr-only">Start</span>
+        </a>
+        <h1 th:text="${title}">Titel</h1>
+      </div>
       <div class="layout__next-to-title">
         <th:block th:replace="${nextToTitle}"></th:block>
       </div>

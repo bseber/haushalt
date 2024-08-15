@@ -2,6 +2,7 @@ package org.bseber.haushalt.development;
 
 import org.bseber.haushalt.core.IBAN;
 import org.bseber.haushalt.core.Money;
+import org.bseber.haushalt.transactions.NewTransaction;
 import org.bseber.haushalt.transactions.Transaction;
 
 import java.math.BigDecimal;
@@ -56,7 +57,7 @@ class DemoDataTransactionProvider {
     private static final Random RANDOM = new Random();
     private static final Currency EUR = Currency.getInstance("EUR");
 
-    Transaction createRandromTransaction(Month month) {
+    NewTransaction createRandromTransaction(Month month) {
 
         final LocalDate firstDateOfMonth = LocalDate.now().withMonth(month.getValue()).with(firstDayOfMonth());
         final LocalDate lastDateOfMonth = LocalDate.now().withMonth(month.getValue()).with(lastDayOfMonth());
@@ -66,7 +67,7 @@ class DemoDataTransactionProvider {
         final LocalDate bookingDate = LocalDate.now().withMonth(month.getValue()).withDayOfMonth(random(days));
         final LocalDate valueDate = random(4) == 1 ? bookingDate : bookingDate.plusDays(1);
 
-        return new Transaction(
+        return new NewTransaction(
             bookingDate,
             Optional.of(valueDate),
             random(Transaction.Procedure.values()),

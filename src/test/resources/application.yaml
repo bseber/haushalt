@@ -1,0 +1,8 @@
+logging:
+  level:
+    org.springframework.jdbc: DEBUG
+    org.bseber: DEBUG
+
+spring:
+  liquibase:
+    change-log: classpath:/db/changelog/changelog-root.xml

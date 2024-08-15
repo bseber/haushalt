@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 
-class TransactionDto {
+class TransactionDetailDto {
 
     @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -27,6 +27,8 @@ class TransactionDto {
 
     @NotEmpty
     private String payee;
+
+    private String mappedPayee;
 
     private String reference;
 
@@ -45,15 +47,19 @@ class TransactionDto {
     @NotNull
     private Transaction.Status status;
 
-    public TransactionDto() {
+    public TransactionDetailDto() {
     }
 
-    public TransactionDto(LocalDate bookingDate, LocalDate valueDate, Transaction.Procedure procedure, String payer, String payee, String reference, Transaction.RevenueType revenueType, String iban, BigDecimal amount, String customerReference, Transaction.Status status) {
+    TransactionDetailDto(LocalDate bookingDate, LocalDate valueDate, Transaction.Procedure procedure,
+                         String payer, String payee, String mappedPayee, String reference,
+                         Transaction.RevenueType revenueType, String iban, BigDecimal amount,
+                         String customerReference, Transaction.Status status) {
         this.bookingDate = bookingDate;
         this.valueDate = valueDate;
         this.procedure = procedure;
         this.payer = payer;
         this.payee = payee;
+        this.mappedPayee = mappedPayee;
         this.reference = reference;
         this.revenueType = revenueType;
         this.iban = iban;
@@ -100,6 +106,14 @@ class TransactionDto {
 
     public void setPayee(@NotEmpty String payee) {
         this.payee = payee;
+    }
+
+    public String getMappedPayee() {
+        return mappedPayee;
+    }
+
+    public void setMappedPayee(String mappedPayee) {
+        this.mappedPayee = mappedPayee;
     }
 
     public String getReference() {
@@ -154,7 +168,7 @@ class TransactionDto {
     public boolean equals(Object obj) {
         if (obj == this) return true;
         if (obj == null || obj.getClass() != this.getClass()) return false;
-        var that = (TransactionDto) obj;
+        var that = (TransactionDetailDto) obj;
         return Objects.equals(this.bookingDate, that.bookingDate) &&
             Objects.equals(this.valueDate, that.valueDate) &&
             Objects.equals(this.procedure, that.procedure) &&
@@ -175,7 +189,7 @@ class TransactionDto {
 
     @Override
     public String toString() {
-        return "TransactionDto[" +
+        return "TransactionDetailDto[" +
             "bookingDate=" + bookingDate + ", " +
             "valueDate=" + valueDate + ", " +
             "procedure=" + procedure + ", " +

@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 import static java.time.temporal.TemporalAdjusters.firstDayOfMonth;
 import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
@@ -57,16 +56,15 @@ class TransactionController {
         }
     }
 
-    private List<TransactionDto> transactionDtos(TransactionBucket bucket) {
+    private List<TransactionListElementDto> transactionDtos(TransactionBucket bucket) {
         return bucket.transactions()
             .stream()
-            .map(TransactionController::toViewDto)
+            .map(transaction -> toTransactionListElementDto(transaction, false))
             .toList();
     }
 
     private static List<ExpensesChartRowDto> expensesChartRows(TransactionBucket bucket) {
-        final Map<String, List<Transaction>> transctionsByPayee = bucket.transactionBy(Transaction::payee);
-        return transctionsByPayee.entrySet().stream()
+        return bucket.transactionBy(Transaction::mappedPayeeOrPayee).entrySet().stream()
             .map(entry -> new ExpensesChartRowDto("April", entry.getKey(), summedExpenses(entry.getValue())))
             .filter(row -> !row.amount().equals(BigDecimal.ZERO))
             .toList();
@@ -81,19 +79,14 @@ class TransactionController {
             .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    static TransactionDto toViewDto(Transaction transaction) {
-        return new TransactionDto(
-            transaction.bookingDate(),
-            transaction.valueDate().orElse(null),
-            transaction.procedure(),
-            transaction.payer(),
-            transaction.payee(),
+    static TransactionListElementDto toTransactionListElementDto(Transaction transaction, boolean active) {
+        return new TransactionListElementDto(
+            transaction.id().value(),
+            transaction.mappedPayeeOrPayee(),
             transaction.reference(),
-            transaction.revenueType(),
-            transaction.ibanPayee().value(),
             transaction.amount().amount(),
-            transaction.customerReference(),
-            transaction.status()
+            transaction.bookingDate(),
+            active
         );
     }
 }

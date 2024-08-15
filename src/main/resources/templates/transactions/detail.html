@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="de">
+  <head th:replace="~{_layout::head(title=~{::title}, styles=~{::styles})}">
+    <title>Haushalt - Transaktion</title>
+    <th:block th:fragment="styles">
+      <link rel="stylesheet" th:href="@{/css/transaction-detail.css}" />
+    </th:block>
+  </head>
+  <body th:replace="~{_layout::body(~{::content})}">
+    <th:block th:ref="content">
+      <div
+        th:replace="~{_navigation::top('Transaktionen', ~{::transactions-filter})}"
+      >
+        <form
+          th:ref="transactions-filter"
+          action="#"
+          th:action="@{/transactions}"
+          th:object="${filter}"
+          method="get"
+          class="transactions-view__filter flex items-center gap-1"
+        >
+          <label for="filter-from-input">von</label>
+          <input id="filter-from-input" type="date" th:field="*{from}" />
+          <label for="filter-to-input">bis</label>
+          <input id="filter-to-input" type="date" th:field="*{to}" />
+          <button type="submit">Aktualisieren</button>
+        </form>
+      </div>
+
+      <main class="layout__content--subgrid">
+        <div class="transaction-view__detail">
+          <h2>Transaktion</h2>
+          <form action="#" th:object="${transaction}">
+            <div>
+              <label for="payee-input">Empfänger</label>
+              <input
+                id="payee-input"
+                type="text"
+                readonly
+                th:field="*{payee}"
+              />
+              <label for="mapped-payee-input">Mapped Empfänger</label>
+              <input
+                id="mapped-payee-input"
+                type="text"
+                th:field="*{mappedPayee}"
+              />
+            </div>
+            <div>
+              <label for="reference-input">Verwendungszweck</label>
+              <input id="reference-input" type="text" th:field="*{reference}" />
+            </div>
+          </form>
+        </div>
+        <div class="transaction-view__transactions flex gap-8">
+          <div th:replace="~{transactions/index::transactions}"></div>
+        </div>
+      </main>
+    </th:block>
+  </body>
+</html>

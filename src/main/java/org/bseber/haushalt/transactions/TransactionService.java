@@ -12,6 +12,7 @@ import java.util.Optional;
 
 import static java.time.temporal.TemporalAdjusters.firstDayOfMonth;
 import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
+import static java.util.Comparator.comparing;
 import static org.springframework.util.StringUtils.hasText;
 
 @Service
@@ -23,6 +24,11 @@ public class TransactionService {
         this.repository = repository;
     }
 
+    public Optional<Transaction> getTransaction(TransactionId id) {
+        return repository.findProjectionById(id.value())
+            .map(TransactionService::toTransaction);
+    }
+
     public TransactionBucket findTransactionsForMonth(Month month) {
 
         final LocalDate date = LocalDate.now().withMonth(month.getValue());
@@ -32,12 +38,13 @@ public class TransactionService {
         final List<Transaction> transactions = repository.findAllByBookingDateAfterAndBookingDateBefore(firstDayOfMonth.minusDays(1), lastDayOfMonth.plusDays(1))
             .stream()
             .map(TransactionService::toTransaction)
+            .sorted(comparing(Transaction::bookingDate))
             .toList();
 
         return new TransactionBucket(transactions);
     }
 
-    public void addTransactions(List<Transaction> transactions) {
+    public void addTransactions(List<NewTransaction> transactions) {
 
         final List<TransactionEntity> entities = transactions.stream()
             .map(TransactionService::toEntity)
@@ -46,25 +53,27 @@ public class TransactionService {
         repository.saveAll(entities);
     }
 
-    private static Transaction toTransaction(TransactionEntity entity) {
-        final String ibanAuftraggeber = entity.getIbanPayer();
+    private static Transaction toTransaction(TransactionEntityProjection projection) {
+        final String ibanAuftraggeber = projection.getIbanPayer();
         return new Transaction(
-            entity.getBookingDate(),
-            Optional.ofNullable(entity.getValueDate()),
-            entity.getProcedure(),
+            new TransactionId(projection.getId()),
+            projection.getBookingDate(),
+            Optional.ofNullable(projection.getValueDate()),
+            projection.getProcedure(),
             Optional.ofNullable(hasText(ibanAuftraggeber) ? new IBAN(ibanAuftraggeber) : null),
-            entity.getPayer(),
-            new IBAN(entity.getIbanPayee()),
-            entity.getPayee(),
-            entity.getRevenueType(),
-            new Money(entity.getAmount(), Currency.getInstance(entity.getCurrency())),
-            entity.getReference(),
-            entity.getCustomerReference(),
-            entity.getStatus()
+            projection.getPayer(),
+            new IBAN(projection.getIbanPayee()),
+            projection.getPayee(),
+            projection.getMappedPayee(),
+            projection.getRevenueType(),
+            new Money(projection.getAmount(), Currency.getInstance(projection.getCurrency())),
+            projection.getReference(),
+            projection.getCustomerReference(),
+            projection.getStatus()
         );
     }
 
-    private static TransactionEntity toEntity(Transaction transaction) {
+    private static TransactionEntity toEntity(HasTransactionFields transaction) {
         final TransactionEntity entity = new TransactionEntity();
         entity.setBookingDate(transaction.bookingDate());
         entity.setValueDate(transaction.valueDate().orElse(null));
