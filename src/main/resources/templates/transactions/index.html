@@ -5,7 +5,11 @@
   >
     <title>Haushalt - Transaktionen</title>
     <th:block th:fragment="styles">
-      <link rel="stylesheet" th:href="@{/css/transactions.css}" />
+      <link
+        rel="stylesheet"
+        th:href="@{/css/transactions.css}"
+        data-turbo-track="dynamic"
+      />
     </th:block>
     <th:block th:fragment="preload">
       <link
@@ -39,7 +43,7 @@
       </div>
 
       <main class="layout__content--subgrid">
-        <div class="transactions-view__charts">
+        <div id="frame-main" class="transactions-view__charts">
           <h2>Ausgaben</h2>
           <div style="width: 100%">
             <script id="expenses-chart-data" th:inline="javascript">
@@ -53,38 +57,13 @@
             <canvas id="expenses-chart-canvas"></canvas>
           </div>
         </div>
-        <div class="transactions-view__transactions flex gap-8">
+        <div
+          id="frame-transactions"
+          class="transactions-view__transactions flex gap-8"
+        >
           <ul
-            th:fragment="transactions"
-            th:if="${not #lists.isEmpty(transactions)}"
-            class="transaction-card-container"
-          >
-            <li th:each="transaction : ${transactions}">
-              <a
-                href="#"
-                th:href="@{/transactions/{id} (id=${transaction.id})}"
-                class="transaction-card"
-                th:classappend="${transaction.active ? 'active' : ''}"
-              >
-                <span
-                  class="transaction-card__booking-date"
-                  th:text="${#temporals.format(transaction.bookingDate, 'LONG')}"
-                ></span>
-                <span
-                  class="transaction-card__amount"
-                  th:text="${#numbers.formatCurrency(transaction.amount)}"
-                ></span>
-                <span
-                  class="transaction-card__payee"
-                  th:text="${transaction.payee}"
-                ></span>
-                <span
-                  class="transaction-card__reference"
-                  th:text="${transaction.reference}"
-                ></span>
-              </a>
-            </li>
-          </ul>
+            th:replace="~{transactions/_transaction-list::transactions(${transactions})}"
+          ></ul>
         </div>
       </main>
     </th:block>

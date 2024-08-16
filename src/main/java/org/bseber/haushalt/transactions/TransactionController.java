@@ -4,11 +4,14 @@ import org.bseber.haushalt.core.Money;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import static java.time.temporal.TemporalAdjusters.firstDayOfMonth;
 import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
@@ -26,7 +29,8 @@ class TransactionController {
     }
 
     @GetMapping
-    public String transactions(TransactionsFilterDto filter, Model model) {
+    public String transactions(TransactionsFilterDto filter, Model model,
+                               @RequestHeader(value = "x-turbo-request-id", required = false) Optional<UUID> turboRequest) {
 
         final LocalDate date = requireNonNullElse(filter.from(), LocalDate.now());
         final LocalDate from = requireNonNullElse(filter.from(), date.with(firstDayOfMonth()));
@@ -38,7 +42,11 @@ class TransactionController {
         model.addAttribute("expensesChartData", expensesChartRows(bucket));
         model.addAttribute("filter", new TransactionsFilterDto(from, to));
 
-        return "transactions/index";
+//        if (turboRequest.isPresent()) {
+//            return "transactions/index::#frame-transactions";
+//        } else {
+            return "transactions/index";
+//        }
     }
 
     private LocalDate filterToDate(TransactionsFilterDto filter) {

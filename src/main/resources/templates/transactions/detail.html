@@ -3,7 +3,11 @@
   <head th:replace="~{_layout::head(title=~{::title}, styles=~{::styles})}">
     <title>Haushalt - Transaktion</title>
     <th:block th:fragment="styles">
-      <link rel="stylesheet" th:href="@{/css/transaction-detail.css}" />
+      <link
+        rel="stylesheet"
+        th:href="@{/css/transaction-detail.css}"
+        data-turbo-track="dynamic"
+      />
     </th:block>
   </head>
   <body th:replace="~{_layout::body(~{::content})}">
@@ -28,7 +32,11 @@
       </div>
 
       <main class="layout__content--subgrid">
-        <div class="transaction-view__detail">
+        <div
+          id="frame-main"
+          th:fragment="frame-main(transaction)"
+          class="transaction-view__detail"
+        >
           <h2>Transaktion</h2>
           <form action="#" th:object="${transaction}">
             <div>
@@ -52,8 +60,16 @@
             </div>
           </form>
         </div>
-        <div class="transaction-view__transactions flex gap-8">
-          <div th:replace="~{transactions/index::transactions}"></div>
+        <div
+          id="frame-transactions"
+          th:fragment="frame-transactions(transactions)"
+          class="transaction-view__transactions flex gap-8"
+          target="_top"
+          refresh="morph"
+        >
+          <div
+            th:replace="~{transactions/_transaction-list::transactions(${transactions})}"
+          ></div>
         </div>
       </main>
     </th:block>

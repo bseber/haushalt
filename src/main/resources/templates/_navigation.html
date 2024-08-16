@@ -6,7 +6,7 @@
   <body>
     <th:block th:fragment="top(title, nextToTitle)">
       <div class="layout__title flex items-center gap-2">
-        <a href="/" class="home-link">
+        <a href="#" th:href="@{/transactions}" class="home-link">
           <svg th:replace="~{icons/landmark::svg}"></svg>
           <span class="sr-only">Start</span>
         </a>

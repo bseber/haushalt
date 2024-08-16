@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <title>Transaction card</title>
+  </head>
+  <body>
+    <ul
+      th:fragment="transactions(transactions)"
+      th:if="${not #lists.isEmpty(transactions)}"
+      class="transaction-card-container"
+    >
+      <li th:each="transaction : ${transactions}">
+        <a
+          th:fragment="transaction-card(transaction)"
+          href="#"
+          th:href="@{/transactions/{id} (id=${transaction.id})}"
+          class="transaction-card"
+          th:classappend="${transaction.active ? 'active' : ''}"
+          data-turbo-action="advance"
+        >
+          <!--      data-turbo-frame="frame-main"-->
+          <span
+            class="transaction-card__booking-date"
+            th:text="${#temporals.format(transaction.bookingDate, 'LONG')}"
+          ></span>
+          <span
+            class="transaction-card__amount"
+            th:text="${#numbers.formatCurrency(transaction.amount)}"
+          ></span>
+          <span
+            class="transaction-card__payee"
+            th:text="${transaction.payee}"
+          ></span>
+          <span
+            class="transaction-card__reference"
+            th:text="${transaction.reference}"
+          ></span>
+        </a>
+      </li>
+    </ul>
+  </body>
+</html>

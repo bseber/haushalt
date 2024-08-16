@@ -31,11 +31,19 @@
     />
     <th:block th:replace="${styles}"></th:block>
     <link rel="stylesheet" type="text/css" th:href="@{/css/03-utility.css}" />
+
+    <link
+      rel="preload"
+      th:replace="~{fragments/asset-dependency-preload::links('common.js')}"
+    />
     <th:block th:replace="${preload}"></th:block>
 
+    <script defer type="module" asset:src="common.js"></script>
     <th:block th:replace="${scriptsDefer}"></th:block>
     <th:block th:replace="${prefetchOrPrerender}"></th:block>
     <th:block th:replace="${additional}"></th:block>
+
+    <meta name="turbo-prefetch" content="false" />
   </head>
   <body th:fragment="body(content)" data-theme="dark">
     <main th:replace="${content}">content block</main>
