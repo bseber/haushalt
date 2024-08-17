@@ -10,6 +10,6 @@ class PayeesController {
 
     @GetMapping
     public String payees() {
-        return "redirect:/payees/mapping";
+        return "forward:/payees/mapping";
     }
 }

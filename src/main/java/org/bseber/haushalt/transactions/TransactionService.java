@@ -54,15 +54,16 @@ public class TransactionService {
     }
 
     private static Transaction toTransaction(TransactionEntityProjection projection) {
-        final String ibanAuftraggeber = projection.getIbanPayer();
+        final String ibanPayer = projection.getIbanPayer();
+        final String ibanPayee = projection.getIbanPayee();
         return new Transaction(
             new TransactionId(projection.getId()),
             projection.getBookingDate(),
             Optional.ofNullable(projection.getValueDate()),
             projection.getProcedure(),
-            Optional.ofNullable(hasText(ibanAuftraggeber) ? new IBAN(ibanAuftraggeber) : null),
+            Optional.ofNullable(hasText(ibanPayer) ? new IBAN(ibanPayer) : null),
             projection.getPayer(),
-            new IBAN(projection.getIbanPayee()),
+            Optional.ofNullable(hasText(ibanPayee) ? new IBAN(ibanPayee) : null),
             projection.getPayee(),
             projection.getMappedPayee(),
             projection.getRevenueType(),
@@ -80,7 +81,7 @@ public class TransactionService {
         entity.setProcedure(transaction.procedure());
         entity.setIbanPayer(transaction.payerIban().map(IBAN::value).orElse(""));
         entity.setPayer(transaction.payer());
-        entity.setIbanPayee(transaction.ibanPayee().value());
+        entity.setIbanPayee(transaction.payeeIban().map(IBAN::value).orElse(""));
         entity.setPayee(transaction.payee());
         entity.setAmount(transaction.amount().amount());
         entity.setCurrency(transaction.amount().currency().getCurrencyCode());

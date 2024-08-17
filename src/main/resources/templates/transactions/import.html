@@ -16,20 +16,26 @@
 
       <main class="layout__content p-4 overflow-auto">
         <div>
-          <h2>CSV Importieren</h2>
+          <h2>Datei Importieren</h2>
           <form
             action="#"
-            th:action="@{/transactions/import/csv}"
+            th:action="@{/transactions/import}"
             method="post"
             enctype="multipart/form-data"
+            data-turbo-frame="frame-import-preview"
           >
             <label
               for="file-input"
-              th:text="#{transactions.import.upload.csv-file.label.text}"
+              th:text="#{transactions.import.upload.file.label.text}"
             >
-              CSV Datei
+              Datei
             </label>
-            <input id="file-input" type="file" name="file" accept="text/csv" />
+            <input
+              id="file-input"
+              type="file"
+              name="file"
+              accept="text/csv,application/pdf"
+            />
             <button
               type="submit"
               th:text="#{transactions.import.upload.submit.text}"
@@ -39,368 +45,380 @@
           </form>
         </div>
 
-        <div class="mt-8" th:if="${preview != null}">
-          <h2 th:text="#{transactions.import.preview.heading.text}">
-            Vorschau
-          </h2>
-          <form
-            class="mt-2"
-            action="#"
-            th:action="@{/transactions/import/csv/apply}"
-            method="post"
-            th:object="${preview}"
-          >
-            <table class="full-width">
-              <thead class="sticky bg-body">
-                <tr>
-                  <th
-                    class="transaktion-import-preview_hcell_booking-date text-left"
-                    th:text="#{transactions.import.preview.booking-date}"
-                  >
-                    Buchung
-                  </th>
-                  <th
-                    class="transaktion-import-preview_hcell_value-date text-left"
-                    th:text="#{transactions.import.preview.value-date}"
-                  >
-                    Wertstellung
-                  </th>
-                  <th
-                    class="transaktion-import-preview_hcell_status text-left"
-                    th:text="#{transactions.import.preview.status}"
-                  >
-                    Status
-                  </th>
-                  <th
-                    class="text-left"
-                    th:text="#{transactions.import.preview.payer}"
-                  >
-                    Zahlungspflichtige*r
-                  </th>
-                  <th
-                    class="text-left"
-                    th:text="#{transactions.import.preview.payee}"
-                  >
-                    Zahlungsempfänger*in
-                  </th>
-                  <th
-                    class="text-left"
-                    th:text="#{transactions.import.preview.procedure}"
-                  >
-                    Vorgang
-                  </th>
-                  <th
-                    class="text-left"
-                    th:text="#{transactions.import.preview.reference}"
-                  >
-                    Verwendungszweck
-                  </th>
-                  <th
-                    class="transaktion-import-preview_hcell_type text-left"
-                    th:text="#{transactions.import.preview.revenue-type}"
-                  >
-                    Umsatztyp
-                  </th>
-                  <th
-                    class="text-left"
-                    th:text="#{transactions.import.preview.iban}"
-                  >
-                    IBAN
-                  </th>
-                  <th
-                    class="transaktion-import-preview_hcell_amount text-right no-wrap"
-                  >
-                    <th:block th:text="#{transactions.import.preview.amount}"
-                      >Betrag</th:block
-                    >
-                  </th>
-                  <th
-                    class="text-left"
-                    th:text="#{transactions.import.preview.customer-reference}"
-                  >
-                    Kundenreferenz
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  th:each="transaction : ${preview.transactions}"
-                  th:with="i=${transactionStat.index}"
-                >
-                  <td
-                    class="transaktion-import-preview_cell_booking-date text-left"
-                    th:with="fieldId=${'booking-date-input-' + i}"
-                  >
-                    <label
-                      class="sr-only"
-                      for="booking-date"
-                      th:for="${fieldId}"
+        <turbo-frame id="frame-import-preview">
+          <div class="mt-8" th:if="${preview != null}">
+            <h2 th:text="#{transactions.import.preview.heading.text}">
+              Vorschau
+            </h2>
+            <form
+              class="mt-2"
+              action="#"
+              th:action="@{/transactions/import/apply}"
+              method="post"
+              th:object="${preview}"
+            >
+              <table class="full-width">
+                <thead class="sticky bg-body">
+                  <tr>
+                    <th
+                      class="transaktion-import-preview_hcell_booking-date text-left"
                       th:text="#{transactions.import.preview.booking-date}"
-                      >Buchung</label
                     >
-                    <input
-                      type="date"
-                      id="booking-date"
-                      th:id="${fieldId}"
-                      th:field="*{transactions[__${i}__].bookingDate}"
-                    />
-                  </td>
-                  <td
-                    class="transaktion-import-preview_cell_value-date text-left"
-                    th:with="fieldId=${'value-date-input-' + i}"
-                  >
-                    <label
-                      class="sr-only"
-                      for="value-date"
-                      th:for="${fieldId}"
+                      Buchung
+                    </th>
+                    <th
+                      class="transaktion-import-preview_hcell_value-date text-left"
                       th:text="#{transactions.import.preview.value-date}"
-                      >Wertstellung</label
                     >
-                    <input
-                      type="date"
-                      id="value-date"
-                      th:id="${fieldId}"
-                      th:field="*{transactions[__${i}__].valueDate}"
-                    />
-                  </td>
-                  <td
-                    class="transaktion-import-preview_cell_status text-left"
-                    th:with="fieldId=${'status-select-' + i}"
-                  >
-                    <label
-                      class="sr-only"
-                      for="status"
-                      th:for="${fieldId}"
+                      Wertstellung
+                    </th>
+                    <th
+                      class="transaktion-import-preview_hcell_status text-left"
                       th:text="#{transactions.import.preview.status}"
-                      >Status</label
                     >
-                    <select
-                      id="status"
-                      th:id="${fieldId}"
-                      th:field="*{transactions[__${i}__].status}"
-                    >
-                      <option disabled value="">Status...</option>
-                      <option
-                        value="BOOKED"
-                        th:text="#{transaction.status.BOOKED}"
-                      >
-                        Vorgemerkt
-                      </option>
-                      <option
-                        value="EXPENSED"
-                        th:text="#{transaction.status.EXPENSED}"
-                      >
-                        Gebucht
-                      </option>
-                    </select>
-                  </td>
-                  <td class="text-left" th:with="fieldId=${'payer-input-' + i}">
-                    <label
-                      class="sr-only"
-                      for="payer"
-                      th:for="${fieldId}"
+                      Status
+                    </th>
+                    <th
+                      class="text-left"
                       th:text="#{transactions.import.preview.payer}"
-                      >Auftraggeber</label
                     >
-                    <input
-                      type="text"
-                      id="payer"
-                      th:id="${fieldId}"
-                      th:field="*{transactions[__${i}__].payer}"
-                    />
-                  </td>
-                  <td class="text-left" th:with="fieldId=${'payee-input-' + i}">
-                    <label
-                      class="sr-only"
-                      for="payee"
-                      th:for="${fieldId}"
+                      Zahlungspflichtige*r
+                    </th>
+                    <th
+                      class="text-left"
                       th:text="#{transactions.import.preview.payee}"
-                      >Empfänger</label
                     >
-                    <input
-                      type="text"
-                      id="payee"
-                      th:id="${fieldId}"
-                      th:field="*{transactions[__${i}__].payee}"
-                    />
-                  </td>
-                  <td
-                    class="text-left"
-                    th:with="fieldId=${'procedure-select-' + i}"
-                  >
-                    <label
-                      class="sr-only"
-                      for="procedure"
-                      th:for="${fieldId}"
+                      Zahlungsempfänger*in
+                    </th>
+                    <th
+                      class="text-left"
                       th:text="#{transactions.import.preview.procedure}"
-                      >Vorgang</label
                     >
-                    <select
-                      id="procedure"
-                      th:field="*{transactions[__${i}__].procedure}"
-                    >
-                      <option value="" disabled>Vorgang</option>
-                      <option
-                        value="UNKNOWN"
-                        th:text="#{transaction.procedure.UNKNOWN}"
-                      >
-                        Unbekannt
-                      </option>
-                      <option
-                        value="CASH_PAYMENT"
-                        th:text="#{transaction.procedure.CASH_PAYMENT}"
-                      >
-                        Barauszahlung
-                      </option>
-                      <option
-                        value="DEBIT_CARD_PAYMENT"
-                        th:text="#{transaction.procedure.DEBIT_CARD_PAYMENT}"
-                      >
-                        Debitkartenzahlung
-                      </option>
-                      <option
-                        value="DEBIT_CARD_PAYMENT_ONLINE"
-                        th:text="#{transaction.procedure.DEBIT_CARD_PAYMENT_ONLINE}"
-                      >
-                        Debitkartenzahlung Online
-                      </option>
-                      <option
-                        value="TRANSFER"
-                        th:text="#{transaction.procedure.TRANSFER}"
-                      >
-                        Überweisung
-                      </option>
-                      <option
-                        value="STANDING_ORDER"
-                        th:text="#{transaction.procedure.STANDING_ORDER}"
-                      >
-                        Dauerauftrag
-                      </option>
-                      <option
-                        value="SALARY"
-                        th:text="#{transaction.procedure.SALARY}"
-                      >
-                        Lohn, Gehalt, Rente
-                      </option>
-                    </select>
-                  </td>
-                  <td
-                    class="text-left"
-                    th:with="fieldId=${'reference-input-' + i}"
-                  >
-                    <label
-                      class="sr-only"
-                      for="reference"
-                      th:for="${fieldId}"
+                      Vorgang
+                    </th>
+                    <th
+                      class="text-left"
                       th:text="#{transactions.import.preview.reference}"
-                      >Verwendungszweck</label
                     >
-                    <input
-                      type="text"
-                      id="reference"
-                      th:id="${fieldId}"
-                      th:field="*{transactions[__${i}__].reference}"
-                    />
-                  </td>
-                  <td
-                    class="transaktion-import-preview_cell_type text-left"
-                    th:with="fieldId=${'revenue-type-select-' + i}"
-                  >
-                    <label
-                      class="sr-only"
-                      for="revenue-type"
-                      th:for="${fieldId}"
+                      Verwendungszweck
+                    </th>
+                    <th
+                      class="transaktion-import-preview_hcell_type text-left"
                       th:text="#{transactions.import.preview.revenue-type}"
-                      >Umsatztyp</label
                     >
-                    <select
-                      id="revenue-type"
-                      th:id="${fieldId}"
-                      th:field="*{transactions[__${i}__].revenueType}"
-                    >
-                      <option disabled value="">Typ...</option>
-                      <option
-                        value="AMOUNT_COMING_IN"
-                        th:text="#{transaction.revenue-type.AMOUNT_COMING_IN}"
-                      >
-                        Eingang
-                      </option>
-                      <option
-                        value="AMOUNT_COMING_OUT"
-                        th:text="#{transaction.revenue-type.AMOUNT_COMING_OUT}"
-                      >
-                        Ausgang
-                      </option>
-                    </select>
-                  </td>
-                  <td class="text-left" th:with="fieldId=${'iban-input-' + i}">
-                    <label
-                      class="sr-only"
-                      for="iban"
-                      th:for="${fieldId}"
+                      Umsatztyp
+                    </th>
+                    <th
+                      class="text-left"
                       th:text="#{transactions.import.preview.iban}"
-                      >IBAN</label
                     >
-                    <input
-                      type="text"
-                      id="iban"
-                      th:id="${fieldId}"
-                      th:field="*{transactions[__${i}__].iban}"
-                    />
-                  </td>
-                  <td
-                    class="transaktion-import-preview_cell_amount"
-                    th:with="fieldId=${'amount-input-' + i}"
-                  >
-                    <label
-                      class="sr-only"
-                      for="amount"
-                      th:for="${fieldId}"
-                      th:text="#{transactions.import.preview.amount}"
-                      >Betrag</label
+                      IBAN
+                    </th>
+                    <th
+                      class="transaktion-import-preview_hcell_amount text-right no-wrap"
                     >
-                    <input
-                      type="text"
-                      inputmode="numeric"
-                      class="text-right tabular-nums"
-                      id="amount"
-                      th:id="${fieldId}"
-                      th:field="*{transactions[__${i}__].amount}"
-                    />
-                    <span class="ml-1">€</span>
-                  </td>
-                  <td
-                    class="text-left"
-                    th:with="fieldId=${'customer-reference-input-' + i}"
-                  >
-                    <label
-                      class="sr-only"
-                      for="customer-reference"
-                      th:for="${fieldId}"
+                      <th:block th:text="#{transactions.import.preview.amount}"
+                        >Betrag</th:block
+                      >
+                    </th>
+                    <th
+                      class="text-left"
                       th:text="#{transactions.import.preview.customer-reference}"
-                      >Kundenreferenz</label
                     >
-                    <input
-                      type="text"
-                      inputmode="numeric"
-                      id="customer-reference"
-                      th:id="${fieldId}"
-                      th:field="*{transactions[__${i}__].customerReference}"
-                    />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <div class="mt-8">
-              <button
-                type="submit"
-                th:text="#{transactions.import.submit.text}"
-              >
-                Importieren
-              </button>
-            </div>
-          </form>
-        </div>
+                      Kundenreferenz
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    th:each="transaction : ${preview.transactions}"
+                    th:with="i=${transactionStat.index}"
+                  >
+                    <td
+                      class="transaktion-import-preview_cell_booking-date text-left"
+                      th:with="fieldId=${'booking-date-input-' + i}"
+                    >
+                      <label
+                        class="sr-only"
+                        for="booking-date"
+                        th:for="${fieldId}"
+                        th:text="#{transactions.import.preview.booking-date}"
+                        >Buchung</label
+                      >
+                      <input
+                        type="date"
+                        id="booking-date"
+                        th:id="${fieldId}"
+                        th:field="*{transactions[__${i}__].bookingDate}"
+                      />
+                    </td>
+                    <td
+                      class="transaktion-import-preview_cell_value-date text-left"
+                      th:with="fieldId=${'value-date-input-' + i}"
+                    >
+                      <label
+                        class="sr-only"
+                        for="value-date"
+                        th:for="${fieldId}"
+                        th:text="#{transactions.import.preview.value-date}"
+                        >Wertstellung</label
+                      >
+                      <input
+                        type="date"
+                        id="value-date"
+                        th:id="${fieldId}"
+                        th:field="*{transactions[__${i}__].valueDate}"
+                      />
+                    </td>
+                    <td
+                      class="transaktion-import-preview_cell_status text-left"
+                      th:with="fieldId=${'status-select-' + i}"
+                    >
+                      <label
+                        class="sr-only"
+                        for="status"
+                        th:for="${fieldId}"
+                        th:text="#{transactions.import.preview.status}"
+                        >Status</label
+                      >
+                      <select
+                        id="status"
+                        th:id="${fieldId}"
+                        th:field="*{transactions[__${i}__].status}"
+                      >
+                        <option disabled value="">Status...</option>
+                        <option
+                          value="BOOKED"
+                          th:text="#{transaction.status.BOOKED}"
+                        >
+                          Vorgemerkt
+                        </option>
+                        <option
+                          value="EXPENSED"
+                          th:text="#{transaction.status.EXPENSED}"
+                        >
+                          Gebucht
+                        </option>
+                      </select>
+                    </td>
+                    <td
+                      class="text-left"
+                      th:with="fieldId=${'payer-input-' + i}"
+                    >
+                      <label
+                        class="sr-only"
+                        for="payer"
+                        th:for="${fieldId}"
+                        th:text="#{transactions.import.preview.payer}"
+                        >Auftraggeber</label
+                      >
+                      <input
+                        type="text"
+                        id="payer"
+                        th:id="${fieldId}"
+                        th:field="*{transactions[__${i}__].payer}"
+                      />
+                    </td>
+                    <td
+                      class="text-left"
+                      th:with="fieldId=${'payee-input-' + i}"
+                    >
+                      <label
+                        class="sr-only"
+                        for="payee"
+                        th:for="${fieldId}"
+                        th:text="#{transactions.import.preview.payee}"
+                        >Empfänger</label
+                      >
+                      <input
+                        type="text"
+                        id="payee"
+                        th:id="${fieldId}"
+                        th:field="*{transactions[__${i}__].payee}"
+                      />
+                    </td>
+                    <td
+                      class="text-left"
+                      th:with="fieldId=${'procedure-select-' + i}"
+                    >
+                      <label
+                        class="sr-only"
+                        for="procedure"
+                        th:for="${fieldId}"
+                        th:text="#{transactions.import.preview.procedure}"
+                        >Vorgang</label
+                      >
+                      <select
+                        id="procedure"
+                        th:id="${fieldId}"
+                        th:field="*{transactions[__${i}__].procedure}"
+                      >
+                        <option value="" disabled>Vorgang</option>
+                        <option
+                          value="UNKNOWN"
+                          th:text="#{transaction.procedure.UNKNOWN}"
+                        >
+                          Unbekannt
+                        </option>
+                        <option
+                          value="CASH_PAYMENT"
+                          th:text="#{transaction.procedure.CASH_PAYMENT}"
+                        >
+                          Barauszahlung
+                        </option>
+                        <option
+                          value="DEBIT_CARD_PAYMENT"
+                          th:text="#{transaction.procedure.DEBIT_CARD_PAYMENT}"
+                        >
+                          Debitkartenzahlung
+                        </option>
+                        <option
+                          value="DEBIT_CARD_PAYMENT_ONLINE"
+                          th:text="#{transaction.procedure.DEBIT_CARD_PAYMENT_ONLINE}"
+                        >
+                          Debitkartenzahlung Online
+                        </option>
+                        <option
+                          value="TRANSFER"
+                          th:text="#{transaction.procedure.TRANSFER}"
+                        >
+                          Überweisung
+                        </option>
+                        <option
+                          value="STANDING_ORDER"
+                          th:text="#{transaction.procedure.STANDING_ORDER}"
+                        >
+                          Dauerauftrag
+                        </option>
+                        <option
+                          value="SALARY"
+                          th:text="#{transaction.procedure.SALARY}"
+                        >
+                          Lohn, Gehalt, Rente
+                        </option>
+                      </select>
+                    </td>
+                    <td
+                      class="text-left"
+                      th:with="fieldId=${'reference-input-' + i}"
+                    >
+                      <label
+                        class="sr-only"
+                        for="reference"
+                        th:for="${fieldId}"
+                        th:text="#{transactions.import.preview.reference}"
+                        >Verwendungszweck</label
+                      >
+                      <input
+                        type="text"
+                        id="reference"
+                        th:id="${fieldId}"
+                        th:field="*{transactions[__${i}__].reference}"
+                      />
+                    </td>
+                    <td
+                      class="transaktion-import-preview_cell_type text-left"
+                      th:with="fieldId=${'revenue-type-select-' + i}"
+                    >
+                      <label
+                        class="sr-only"
+                        for="revenue-type"
+                        th:for="${fieldId}"
+                        th:text="#{transactions.import.preview.revenue-type}"
+                        >Umsatztyp</label
+                      >
+                      <select
+                        id="revenue-type"
+                        th:id="${fieldId}"
+                        th:field="*{transactions[__${i}__].revenueType}"
+                      >
+                        <option disabled value="">Typ...</option>
+                        <option
+                          value="AMOUNT_COMING_IN"
+                          th:text="#{transaction.revenue-type.AMOUNT_COMING_IN}"
+                        >
+                          Eingang
+                        </option>
+                        <option
+                          value="AMOUNT_COMING_OUT"
+                          th:text="#{transaction.revenue-type.AMOUNT_COMING_OUT}"
+                        >
+                          Ausgang
+                        </option>
+                      </select>
+                    </td>
+                    <td
+                      class="text-left"
+                      th:with="fieldId=${'iban-input-' + i}"
+                    >
+                      <label
+                        class="sr-only"
+                        for="iban"
+                        th:for="${fieldId}"
+                        th:text="#{transactions.import.preview.iban}"
+                        >IBAN</label
+                      >
+                      <input
+                        type="text"
+                        id="iban"
+                        th:id="${fieldId}"
+                        th:field="*{transactions[__${i}__].iban}"
+                      />
+                    </td>
+                    <td
+                      class="transaktion-import-preview_cell_amount"
+                      th:with="fieldId=${'amount-input-' + i}"
+                    >
+                      <label
+                        class="sr-only"
+                        for="amount"
+                        th:for="${fieldId}"
+                        th:text="#{transactions.import.preview.amount}"
+                        >Betrag</label
+                      >
+                      <input
+                        type="text"
+                        inputmode="numeric"
+                        class="text-right tabular-nums"
+                        id="amount"
+                        th:id="${fieldId}"
+                        th:field="*{transactions[__${i}__].amount}"
+                      />
+                      <span class="ml-1">€</span>
+                    </td>
+                    <td
+                      class="text-left"
+                      th:with="fieldId=${'customer-reference-input-' + i}"
+                    >
+                      <label
+                        class="sr-only"
+                        for="customer-reference"
+                        th:for="${fieldId}"
+                        th:text="#{transactions.import.preview.customer-reference}"
+                        >Kundenreferenz</label
+                      >
+                      <input
+                        type="text"
+                        inputmode="numeric"
+                        id="customer-reference"
+                        th:id="${fieldId}"
+                        th:field="*{transactions[__${i}__].customerReference}"
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="mt-8">
+                <button
+                  type="submit"
+                  th:text="#{transactions.import.submit.text}"
+                >
+                  Importieren
+                </button>
+              </div>
+            </form>
+          </div>
+        </turbo-frame>
       </main>
     </th:block>
   </body>

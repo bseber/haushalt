@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 
-class TransactionImportDto {
+public class TransactionImportDto {
 
     @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -33,7 +33,6 @@ class TransactionImportDto {
     @NotNull
     private Transaction.RevenueType revenueType;
 
-    @NotEmpty
     private String iban;
 
     @NotNull
@@ -118,11 +117,11 @@ class TransactionImportDto {
         this.revenueType = revenueType;
     }
 
-    public @NotEmpty String getIban() {
+    public String getIban() {
         return iban;
     }
 
-    public void setIban(@NotEmpty String iban) {
+    public void setIban(String iban) {
         this.iban = iban;
     }
 
@@ -175,7 +174,7 @@ class TransactionImportDto {
 
     @Override
     public String toString() {
-        return "TransactionDto[" +
+        return "TransactionImportDto[" +
             "bookingDate=" + bookingDate + ", " +
             "valueDate=" + valueDate + ", " +
             "procedure=" + procedure + ", " +

@@ -1,5 +1,6 @@
 package org.bseber.haushalt.transactions;
 
+import org.bseber.haushalt.core.IBAN;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -79,7 +80,7 @@ class TransactionDetailController {
             transaction.mappedPayee(),
             transaction.reference(),
             transaction.revenueType(),
-            transaction.ibanPayee().value(),
+            transaction.payeeIban().map(IBAN::value).orElse(""),
             transaction.amount().amount(),
             transaction.customerReference(),
             transaction.status()

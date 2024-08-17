@@ -15,7 +15,7 @@ import java.util.Optional;
  * @param procedure procedure
  * @param payerIban optional payer {@link IBAN}
  * @param payer name of the payer
- * @param ibanPayee payee {@link IBAN}
+ * @param payeeIban optional payee {@link IBAN}
  * @param payee name of the payee
  * @param mappedPayee user mapped name of the payee. (e.g. "Amazon Payments Europe XYZ" is mapped to "Amazon")
  * @param revenueType revenue type
@@ -31,7 +31,7 @@ public record Transaction(
     Procedure procedure,
     Optional<IBAN> payerIban,
     String payer,
-    IBAN ibanPayee,
+    Optional<IBAN> payeeIban,
     String payee,
     String mappedPayee,
     RevenueType revenueType,

@@ -14,7 +14,7 @@ import java.util.Optional;
  * @param procedure procedure
  * @param payerIban optional payer {@link IBAN}
  * @param payer name of the payer
- * @param ibanPayee payee {@link IBAN}
+ * @param payeeIban optional payee {@link IBAN}
  * @param payee name of the payee
  * @param revenueType revenue type
  * @param amount amount
@@ -28,7 +28,7 @@ public record NewTransaction(
     Transaction.Procedure procedure,
     Optional<IBAN> payerIban,
     String payer,
-    IBAN ibanPayee,
+    Optional<IBAN> payeeIban,
     String payee,
     Transaction.RevenueType revenueType,
     Money amount,

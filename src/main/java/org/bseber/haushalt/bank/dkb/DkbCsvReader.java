@@ -8,7 +8,7 @@ import org.bseber.haushalt.csv.CsvReader;
 import org.bseber.haushalt.csv.CsvRow;
 import org.bseber.haushalt.transactions.NewTransaction;
 import org.bseber.haushalt.transactions.Transaction;
-import org.bseber.haushalt.transactions.TransactionCsvReader;
+import org.bseber.haushalt.transactions.importer.TransactionFileReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -27,7 +27,7 @@ import static org.bseber.haushalt.DateParser.parseDate;
 import static org.springframework.util.StringUtils.hasText;
 
 @Component
-class DkbCsvReader implements TransactionCsvReader {
+class DkbCsvReader implements TransactionFileReader {
 
     private static final Logger LOG = LoggerFactory.getLogger(lookup().lookupClass());
 
@@ -42,11 +42,12 @@ class DkbCsvReader implements TransactionCsvReader {
 
     @Override
     public boolean supports(File file) {
-        return true;
+        // TODO any DKB specifics here?
+        return file.getName().endsWith(".csv");
     }
 
     @Override
-    public List<NewTransaction> readCsvFile(File file) throws IOException {
+    public List<NewTransaction> readFile(File file) throws IOException {
         return csvReader.readRows(file, DELIMITER).stream()
             .map(DkbCsvReader::toDkbTransaktion)
             .filter(Objects::nonNull)
@@ -129,7 +130,7 @@ class DkbCsvReader implements TransactionCsvReader {
             toProcedure(dkbTransaktion),
             Optional.empty(),
             dkbTransaktion.payer(),
-            dkbTransaktion.iban(),
+            Optional.of(dkbTransaktion.iban()),
             dkbTransaktion.payee(),
             toTyp(dkbTransaktion.type()),
             dkbTransaktion.amount(),

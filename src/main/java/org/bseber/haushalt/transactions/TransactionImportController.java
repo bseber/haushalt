@@ -3,10 +3,10 @@ package org.bseber.haushalt.transactions;
 import jakarta.servlet.http.HttpServletRequest;
 import org.bseber.haushalt.core.IBAN;
 import org.bseber.haushalt.core.Money;
+import org.bseber.haushalt.transactions.importer.TransactionFileReaderDelegate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +29,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static java.lang.invoke.MethodHandles.lookup;
+import static org.springframework.util.StringUtils.hasText;
 
 @Controller
 @RequestMapping("/transactions/import")
@@ -36,12 +37,12 @@ class TransactionImportController {
 
     private static final Logger LOG = LoggerFactory.getLogger(lookup().lookupClass());
 
+    private final TransactionFileReaderDelegate transactionFileReader;
     private final TransactionService transactionService;
-    private final List<TransactionCsvReader> csvReaders;
 
-    TransactionImportController(TransactionService transactionService, List<TransactionCsvReader> csvReaders) {
+    TransactionImportController(TransactionFileReaderDelegate transactionFileReader, TransactionService transactionService) {
+        this.transactionFileReader = transactionFileReader;
         this.transactionService = transactionService;
-        this.csvReaders = csvReaders;
     }
 
     @InitBinder
@@ -52,22 +53,12 @@ class TransactionImportController {
     }
 
     @GetMapping
-    public String get(Model model) {
+    public String get() {
         return "transactions/import";
     }
 
-    @GetMapping("/csv")
-    public String get(HttpServletRequest request) {
-        final Map<String, ?> inputFlashMap = RequestContextUtils.getInputFlashMap(request);
-        if (inputFlashMap != null) {
-            return "transactions/import";
-        } else {
-            return "redirect:/transactions/import";
-        }
-    }
-
-    @PostMapping("/csv")
-    public String importCsv(@RequestParam("file") MultipartFile multipartFile, RedirectAttributes redirectAttributes) {
+    @PostMapping
+    public String importFilePreview(@RequestParam("file") MultipartFile multipartFile, RedirectAttributes redirectAttributes) {
 
         final List<NewTransaction> transactions = readFile(multipartFile);
         final List<TransactionImportDto> dtos = transactions
@@ -77,33 +68,46 @@ class TransactionImportController {
 
         redirectAttributes.addFlashAttribute("preview", new ImportPreviewDto(dtos));
 
-        return "redirect:/transactions/import/csv";
+        return "redirect:/transactions/import/preview";
     }
 
-    @PostMapping("/csv/apply")
-    public String applyImportedCsv(@ModelAttribute("preview") ImportPreviewDto dto, Errors errors, RedirectAttributes redirectAttributes) {
+    @GetMapping("/preview")
+    public String importPreview(HttpServletRequest request) {
+        final Map<String, ?> inputFlashMap = RequestContextUtils.getInputFlashMap(request);
+        if (inputFlashMap == null) {
+            // user called url directly without using the import workflow
+            // (or did a page reload on the preview page...)
+            return "redirect:/transactions/import";
+        } else {
+            // import workflow used -> render import page with preview (exists in inputFlashMap)
+            return "transactions/import";
+        }
+    }
+
+    @PostMapping("/apply")
+    public String importFileApply(@ModelAttribute("preview") ImportPreviewDto dto, Errors errors, RedirectAttributes redirectAttributes) {
         if (errors.hasErrors()) {
             // TODO does this work with validation errors?
             redirectAttributes.addFlashAttribute("preview", dto);
-            return "redirect:/transactions/import/csv";
+            return "redirect:/transactions/import";
         }
 
         final List<NewTransaction> transactions = dto.getTransactions().stream().map(TransactionImportController::toTransaction).toList();
         transactionService.addTransactions(transactions);
 
         redirectAttributes.addFlashAttribute("importSuccess", true);
+        redirectAttributes.addFlashAttribute("turboReload", true);
+
         return "redirect:/transactions";
     }
-
 
     private List<NewTransaction> readFile(MultipartFile multipartFile) {
         File file = null;
         try {
-            file = toFile(multipartFile);
-            final TransactionCsvReader csvReader = getReader(file);
-            return csvReader.readCsvFile(file);
+            file = toTemporaryFile(multipartFile);
+            return transactionFileReader.readFile(file);
         } catch (IOException e) {
-            LOG.error("Could not read CSV file.", e);
+            LOG.error("Could not read file.", e);
             return List.of();
         } finally {
             deleteFile(file);
@@ -111,13 +115,14 @@ class TransactionImportController {
     }
 
     private static NewTransaction toTransaction(TransactionImportDto dto) {
+        IBAN iban = hasText(dto.getIban()) ? new IBAN(dto.getIban()) : null;
         return new NewTransaction(
             dto.getBookingDate(),
             Optional.ofNullable(dto.getValueDate()),
             dto.getProcedure(),
             Optional.empty(),
             dto.getPayer(),
-            new IBAN(dto.getIban()),
+            Optional.ofNullable(iban),
             dto.getPayee(),
             dto.getRevenueType(),
             Money.ofEUR(dto.getAmount()),
@@ -137,18 +142,24 @@ class TransactionImportController {
         }
     }
 
-    private static File toFile(MultipartFile multipartFile) throws IOException {
-        final Path tempFilePath = Files.createTempFile("import-" + UUID.randomUUID(), ".csv");
+    private static File toTemporaryFile(MultipartFile multipartFile) throws IOException {
+        final String contentType = multipartFile.getContentType();
+        final Path tempFilePath = Files.createTempFile("import-" + UUID.randomUUID(), contentTypeToSuffix(contentType));
         multipartFile.transferTo(tempFilePath);
         return tempFilePath.toFile();
     }
 
-    private TransactionCsvReader getReader(File file) {
-        return csvReaders.stream()
-            .filter(reader -> reader.supports(file))
-            .findFirst()
-            // currently not expected since DKB is hard coded
-            .orElseThrow(() -> new IllegalStateException("Could not find matching CsvReader for file."));
+    private static String contentTypeToSuffix(String contentType) {
+        if (!hasText(contentType)) {
+            // or should we throw since not supported?
+            LOG.info("Received empty contentType. Using empty suffix for file name.");
+            return "";
+        }
+        return switch (contentType) {
+            case "application/pdf" -> ".pdf";
+            case "text/csv" -> ".csv";
+            default -> throw new IllegalStateException("contentType %s not supported yet".formatted(contentType));
+        };
     }
 
     private static TransactionImportDto toTransactionImportDto(NewTransaction transaction) {
@@ -160,7 +171,7 @@ class TransactionImportController {
             transaction.payee(),
             transaction.reference(),
             transaction.revenueType(),
-            transaction.ibanPayee().value(),
+            transaction.payeeIban().map(IBAN::value).orElse(""),
             transaction.amount().amount(),
             transaction.customerReference(),
             transaction.status()

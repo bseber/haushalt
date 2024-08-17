@@ -73,7 +73,7 @@ class DemoDataTransactionProvider {
             random(Transaction.Procedure.values()),
             Optional.empty(),
             random(PAYERS),
-            new IBAN(random(IBANS)),
+            Optional.of(new IBAN(random(IBANS))),
             random(PAYEES),
             // TODO also create AMOUNT_COMING_IN
             Transaction.RevenueType.AMOUNT_COMING_OUT,

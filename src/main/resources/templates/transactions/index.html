@@ -44,26 +44,33 @@
 
       <main class="layout__content--subgrid">
         <div id="frame-main" class="transactions-view__charts">
-          <h2>Ausgaben</h2>
-          <div style="width: 100%">
-            <script id="expenses-chart-data" th:inline="javascript">
-              window.haushalt = window.haushalt ?? {};
-              window.haushalt.expenses = window.haushalt.expenses ?? {};
-              window.haushalt.expenses.chart =
-                window.haushalt.expenses.chart ?? {};
-              window.haushalt.expenses.chart.data =
-                /*[[${expensesChartData}]]*/ [];
-            </script>
-            <canvas id="expenses-chart-canvas"></canvas>
-          </div>
+          <th:block th:if="${not #lists.isEmpty(transactions)}">
+            <h2>Ausgaben</h2>
+            <div style="width: 100%">
+              <script id="expenses-chart-data" th:inline="javascript">
+                window.haushalt = window.haushalt ?? {};
+                window.haushalt.expenses = window.haushalt.expenses ?? {};
+                window.haushalt.expenses.chart =
+                  window.haushalt.expenses.chart ?? {};
+                window.haushalt.expenses.chart.data =
+                  /*[[${expensesChartData}]]*/ [];
+              </script>
+              <div id="expenses-chart-canvas"></div>
+            </div>
+          </th:block>
         </div>
         <div
           id="frame-transactions"
           class="transactions-view__transactions flex gap-8"
         >
-          <ul
-            th:replace="~{transactions/_transaction-list::transactions(${transactions})}"
-          ></ul>
+          <th:block th:if="${#lists.isEmpty(transactions)}">
+            <p style="align-self: flex-start">Keine Transaktionen</p>
+          </th:block>
+          <th:block th:if="${not #lists.isEmpty(transactions)}">
+            <ul
+              th:replace="~{transactions/_transaction-list::transactions(${transactions})}"
+            ></ul>
+          </th:block>
         </div>
       </main>
     </th:block>

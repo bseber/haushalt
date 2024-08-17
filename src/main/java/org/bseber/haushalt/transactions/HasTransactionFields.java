@@ -21,7 +21,7 @@ interface HasTransactionFields {
 
     String payer();
 
-    IBAN ibanPayee();
+    Optional<IBAN> payeeIban();
 
     String payee();
 
