@@ -47,7 +47,9 @@ public class TransactionImportDto {
     public TransactionImportDto() {
     }
 
-    public TransactionImportDto(LocalDate bookingDate, LocalDate valueDate, Transaction.Procedure procedure, String payer, String payee, String reference, Transaction.RevenueType revenueType, String iban, BigDecimal amount, String customerReference, Transaction.Status status) {
+    public TransactionImportDto(LocalDate bookingDate, LocalDate valueDate, Transaction.Procedure procedure,
+                                String payer, String payee, String reference, Transaction.RevenueType revenueType,
+                                String iban, BigDecimal amount, String customerReference, Transaction.Status status) {
         this.bookingDate = bookingDate;
         this.valueDate = valueDate;
         this.procedure = procedure;
@@ -185,7 +187,7 @@ public class TransactionImportDto {
             "iban=" + iban + ", " +
             "amount=" + amount + ", " +
             "customerReference=" + customerReference + ", " +
-            "status=" + status + ']';
+            "status=" + status + "]";
     }
 
 }

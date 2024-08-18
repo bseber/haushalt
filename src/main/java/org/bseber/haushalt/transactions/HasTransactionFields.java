@@ -9,7 +9,7 @@ import java.util.Optional;
 /**
  * Marker interface for {@link Transaction} and {@link NewTransaction} to ensure same fields.
  */
-interface HasTransactionFields {
+public interface HasTransactionFields {
 
     LocalDate bookingDate();
 

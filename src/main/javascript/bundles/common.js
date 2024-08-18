@@ -1,4 +1,3 @@
-import { Idiomorph } from "idiomorph/dist/idiomorph.esm.js";
 import * as Turbo from "@hotwired/turbo";
 
 console.log("Turbo 🐌 enabled.", Turbo);
@@ -11,16 +10,12 @@ document.addEventListener("turbo:visit", function (event) {
   console.log("turbo:visit", event.detail);
 });
 
+document.addEventListener("turbo:before-cache", function (event) {
+  console.log("turbo:before-cache", event.detail);
+});
+
 document.addEventListener("turbo:before-render", function (event) {
   console.log("turbo:before-render", event.detail);
-  // morph all the things!
-  event.detail.render = (currentElement, newElement) => {
-    Idiomorph.morph(currentElement, newElement, {
-      head: {
-        style: "morph", // order is important for stylesheets! (utility classes has to be last)
-      },
-    });
-  };
 });
 
 document.addEventListener("turbo:render", function (event) {
@@ -41,4 +36,16 @@ document.addEventListener("turbo:render", function (event) {
       utilityCss,
     );
   }
+});
+
+document.addEventListener("turbo:morph", function (event) {
+  console.log("turbo:morph", event.detail);
+});
+
+document.addEventListener("turbo:before-morph-element", function (event) {
+  console.log("turbo:before-morph-element", event.detail);
+});
+
+document.addEventListener("turbo:morph-element", function (event) {
+  console.log("turbo:morph-element", event.detail);
 });

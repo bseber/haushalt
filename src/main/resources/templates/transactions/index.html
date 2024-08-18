@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="de">
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
   <head
     th:replace="~{_layout::head(title=~{::title}, preload=~{::preload}, scriptsDefer=~{::scriptsDefer}, styles=~{::styles})}"
   >
@@ -38,7 +38,9 @@
           <input id="filter-from-input" type="date" th:field="*{from}" />
           <label for="filter-to-input">bis</label>
           <input id="filter-to-input" type="date" th:field="*{to}" />
-          <button type="submit">Aktualisieren</button>
+          <button type="submit" data-turbo-action="replace">
+            Aktualisieren
+          </button>
         </form>
       </div>
 

@@ -1,38 +1,192 @@
-table {
-  td > input,
-  td > select {
-    width: 100%;
+[data-theme="dark"] {
+  .error {
+    border: 1px solid red;
   }
 }
 
-.transaktion-import-preview_hcell_booking-date,
-.transaktion-import-preview_hcell_value-date,
-.transaktion-import-preview_cell_booking-date,
-.transaktion-import-preview_cell_value-date {
-  width: 9rem;
+.transaction-import-list {
+  display: grid;
+  column-gap: var(--gap);
+  grid-template-columns: auto auto auto auto auto auto auto auto auto auto auto;
+
+  input,
+  select {
+    width: 100%;
+    height: 100%;
+  }
+
+  > li,
+  .transaction-import-list__card,
+  .transaction-import-suggestions {
+    grid-column: 1/-1;
+    display: grid;
+    grid-template-columns: subgrid;
+  }
+
+  > li {
+    transition: border-color ease-in-out 0.2s;
+    border-radius: 3px;
+    &:not(.transaction-import-list__head) {
+      &:hover,
+      &:focus-within {
+        input,
+        select {
+          background-color: var(--color-slate-800);
+        }
+        .transaction-import-suggestions {
+          color: var(--color-slate-400);
+        }
+      }
+    }
+  }
+
+  .transaction-import-list__head {
+    border: 1px solid var(--color-slate-800);
+    background-color: var(--color-slate-900);
+    padding: var(--gap) var(--gap-2);
+    margin-bottom: var(--gap);
+    span {
+      font-weight: 500;
+      font-size: 0.9em;
+      &:not(:first-child) {
+        padding: 0 var(--gap);
+      }
+    }
+  }
+
+  .transaction-booking-date {
+    grid-column: 1;
+  }
+  .transaction-value-date {
+    grid-column: 2;
+  }
+  .transaction-status {
+    grid-column: 3;
+  }
+  .transaction-payer {
+    grid-column: 4;
+  }
+  .transaction-payee {
+    grid-column: 5;
+  }
+  .transaction-procedure {
+    grid-column: 6;
+  }
+  .transaction-reference {
+    grid-column: 7;
+  }
+  .transaction-revenue-type {
+    grid-column: 8;
+  }
+  .transaction-iban {
+    grid-column: 9;
+  }
+  .transaction-amount {
+    grid-column: 10;
+  }
+  .transaction-customer-reference {
+    grid-column: 11;
+  }
 }
 
-.transaktion-import-preview_hcell_status,
-.transaktion-import-preview_cell_status {
-  width: 9rem;
-}
+.transaction-import-list-conflicts {
+  grid-template-columns: max-content auto auto auto auto auto auto auto auto auto auto auto;
+  row-gap: var(--gap-2);
 
-.transaktion-import-preview_hcell_type,
-.transaktion-import-preview_cell_type {
-  width: 9rem;
-}
+  .transaction-import-list__head {
+    span:nth-child(1) {
+      grid-column: 2;
+      padding: 0 var(--gap);
+    }
+    span:nth-child(2) {
+      grid-column: 3;
+    }
+    span:nth-child(3) {
+      grid-column: 4;
+    }
+    span:nth-child(4) {
+      grid-column: 5;
+    }
+    span:nth-child(5) {
+      grid-column: 6;
+    }
+    span:nth-child(6) {
+      grid-column: 7;
+    }
+    span:nth-child(7) {
+      grid-column: 8;
+    }
+    span:nth-child(8) {
+      grid-column: 9;
+    }
+    span:nth-child(9) {
+      grid-column: 10;
+    }
+    span:nth-child(10) {
+      grid-column: 11;
+    }
+    span:nth-child(11) {
+      grid-column: 12;
+    }
+  }
 
-.transaktion-import-preview_hcell_amount,
-.transaktion-import-preview_cell_amount {
-  width: 9.5rem;
-}
+  .transaction-import-suggestions {
+    transition: color ease-in-out 0.2s;
+    color: var(--color-slate-500);
+    font-size: 0.9em;
+    li {
+      grid-column: 1/-1;
+      display: grid;
+      grid-template-columns: subgrid;
+      grid-template-rows: subgrid;
+    }
+    li span {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      padding: 0 calc(var(--gap) + 2px); /* 2px -> 1px border of input */
+    }
+  }
 
-.transaktion-import-preview_hcell_amount {
-  padding-right: calc(var(--gap) * 6);
-}
-
-.transaktion-import-preview_cell_amount {
-  input {
-    width: 8rem;
+  .transaction-import-me {
+    grid-column: 1;
+    display: flex;
+    align-items: center;
+    input {
+      width: 1.25rem;
+    }
+  }
+  .transaction-booking-date {
+    grid-column: 2;
+  }
+  .transaction-value-date {
+    grid-column: 3;
+  }
+  .transaction-status {
+    grid-column: 4;
+  }
+  .transaction-payer {
+    grid-column: 5;
+  }
+  .transaction-payee {
+    grid-column: 6;
+  }
+  .transaction-procedure {
+    grid-column: 7;
+  }
+  .transaction-reference {
+    grid-column: 8;
+  }
+  .transaction-revenue-type {
+    grid-column: 9;
+  }
+  .transaction-iban {
+    grid-column: 10;
+  }
+  .transaction-amount {
+    grid-column: 11;
+  }
+  .transaction-customer-reference {
+    grid-column: 12;
   }
 }

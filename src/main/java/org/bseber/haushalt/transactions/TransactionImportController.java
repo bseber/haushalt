@@ -1,18 +1,21 @@
 package org.bseber.haushalt.transactions;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.bseber.haushalt.core.IBAN;
 import org.bseber.haushalt.core.Money;
 import org.bseber.haushalt.transactions.importer.TransactionFileReaderDelegate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.Errors;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,8 +30,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import static java.lang.invoke.MethodHandles.lookup;
+import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 import static org.springframework.util.StringUtils.hasText;
 
 @Controller
@@ -61,18 +66,27 @@ class TransactionImportController {
     public String importFilePreview(@RequestParam("file") MultipartFile multipartFile, RedirectAttributes redirectAttributes) {
 
         final List<NewTransaction> transactions = readFile(multipartFile);
+        final List<TransactionDuplicate> conflicts = transactionService.findTransactionDuplicates(transactions);
+
+        final List<TransactionConflictDto> conflictDtos = conflicts.stream().map(conflict -> {
+            final TransactionImportDto candidateDto = toTransactionImportDto(conflict.candidate());
+            final List<TransactionImportDto> suggestionDtos = conflict.suggestions().stream().map(TransactionImportController::toTransactionImportDto).toList();
+            return new TransactionConflictDto(candidateDto, suggestionDtos);
+        }).toList();
+
         final List<TransactionImportDto> dtos = transactions
             .stream()
+            .filter(transaction -> conflicts.stream().noneMatch(conflict -> conflict.matches(transaction)))
             .map(TransactionImportController::toTransactionImportDto)
             .toList();
 
-        redirectAttributes.addFlashAttribute("preview", new ImportPreviewDto(dtos));
+        redirectAttributes.addFlashAttribute("preview", new ImportPreviewDto(conflictDtos, dtos));
 
         return "redirect:/transactions/import/preview";
     }
 
     @GetMapping("/preview")
-    public String importPreview(HttpServletRequest request) {
+    public String importPreview(HttpServletRequest request, HttpServletResponse response) {
         final Map<String, ?> inputFlashMap = RequestContextUtils.getInputFlashMap(request);
         if (inputFlashMap == null) {
             // user called url directly without using the import workflow
@@ -80,25 +94,52 @@ class TransactionImportController {
             return "redirect:/transactions/import";
         } else {
             // import workflow used -> render import page with preview (exists in inputFlashMap)
+            final Object turboErrorRedirect = inputFlashMap.get("turboErrorRedirect");
+            if (turboErrorRedirect instanceof Boolean b && b) {
+                response.setStatus(UNPROCESSABLE_ENTITY.value());
+            }
             return "transactions/import";
         }
     }
 
     @PostMapping("/apply")
-    public String importFileApply(@ModelAttribute("preview") ImportPreviewDto dto, Errors errors, RedirectAttributes redirectAttributes) {
+    public String importFileApply(@Valid @ModelAttribute("preview") ImportPreviewDto dto, BindingResult errors,
+                                  RedirectAttributes redirectAttributes, @RequestHeader(value = "x-turbo-request-id", required = false) Optional<UUID> turboRequest) {
+
         if (errors.hasErrors()) {
-            // TODO does this work with validation errors?
+            redirectAttributes.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "preview", errors);
             redirectAttributes.addFlashAttribute("preview", dto);
-            return "redirect:/transactions/import";
+            redirectAttributes.addFlashAttribute("turboErrorRedirect", turboRequest.isPresent());
+            return "redirect:/transactions/import/preview";
         }
 
-        final List<NewTransaction> transactions = dto.getTransactions().stream().map(TransactionImportController::toTransaction).toList();
-        transactionService.addTransactions(transactions);
+        final Stream<NewTransaction> conflictsToUse = dto.getConflicts().stream()
+            .filter(TransactionConflictDto::isImportMe)
+            .map(TransactionConflictDto::getTransaction)
+            .map(TransactionImportController::toTransaction);
 
-        redirectAttributes.addFlashAttribute("importSuccess", true);
-        redirectAttributes.addFlashAttribute("turboReload", true);
+        final Stream<NewTransaction> transactionsToUse = dto.getTransactions().stream()
+            .map(TransactionImportController::toTransaction);
 
-        return "redirect:/transactions";
+        final List<NewTransaction> newTransactions = Stream.concat(conflictsToUse, transactionsToUse).toList();
+
+        final TransactionCreationResult result = transactionService.addTransactions(newTransactions);
+        if (result.isSuccess()) {
+            redirectAttributes.addFlashAttribute("importSuccess", true);
+            redirectAttributes.addFlashAttribute("turboReload", true);
+            return "redirect:/transactions";
+        }
+
+        final List<TransactionConflictDto> conflictDtos = result.duplicates().stream().map(duplicate -> {
+            final TransactionImportDto candidateDto = toTransactionImportDto(duplicate.candidate());
+            final List<TransactionImportDto> suggestionDtos = duplicate.suggestions().stream().map(TransactionImportController::toTransactionImportDto).toList();
+            return new TransactionConflictDto(candidateDto, suggestionDtos);
+        }).toList();
+
+        redirectAttributes.addFlashAttribute("importedCount", result.newTransactions().size());
+        redirectAttributes.addFlashAttribute("preview", new ImportPreviewDto(conflictDtos, List.of()));
+
+        return "redirect:/transactions/import";
     }
 
     private List<NewTransaction> readFile(MultipartFile multipartFile) {
@@ -162,7 +203,7 @@ class TransactionImportController {
         };
     }
 
-    private static TransactionImportDto toTransactionImportDto(NewTransaction transaction) {
+    private static TransactionImportDto toTransactionImportDto(HasTransactionFields transaction) {
         return new TransactionImportDto(
             transaction.bookingDate(),
             transaction.valueDate().orElse(null),

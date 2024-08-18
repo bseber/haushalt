@@ -2,13 +2,17 @@ package org.bseber.haushalt.transactions;
 
 import org.bseber.haushalt.core.IBAN;
 import org.bseber.haushalt.core.Money;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Currency;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 import static java.time.temporal.TemporalAdjusters.firstDayOfMonth;
 import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
@@ -22,6 +26,36 @@ public class TransactionService {
 
     TransactionService(TransactionRepository repository) {
         this.repository = repository;
+    }
+
+    public List<TransactionDuplicate> findTransactionDuplicates(List<NewTransaction> candidates) {
+
+        final List<Example<TransactionEntity>> query = candidates.stream()
+            .map(t -> {
+                final TransactionEntity entity = new TransactionEntity();
+                entity.setBookingDate(t.bookingDate());
+                entity.setAmount(t.amount().amount());
+                return Example.of(entity);
+            })
+            .toList();
+
+        final List<Transaction> suggestions = repository.findAllBy(query).stream()
+            .map(TransactionService::toTransaction)
+            .toList();
+
+        return candidates.stream()
+            .map(candidate -> {
+                final List<Transaction> candidateSuggestions = suggestions.stream()
+                    .filter(s -> s.bookingDate().equals(candidate.bookingDate()) && s.amount().equals(candidate.amount()))
+                    .toList();
+                if (candidateSuggestions.isEmpty()) {
+                    return null;
+                } else {
+                    return new TransactionDuplicate(candidate, candidateSuggestions);
+                }
+            })
+            .filter(Objects::nonNull)
+            .toList();
     }
 
     public Optional<Transaction> getTransaction(TransactionId id) {
@@ -44,13 +78,28 @@ public class TransactionService {
         return new TransactionBucket(transactions);
     }
 
-    public void addTransactions(List<NewTransaction> transactions) {
+    @Transactional
+    public TransactionCreationResult addTransactions(List<NewTransaction> newTransactions) {
 
-        final List<TransactionEntity> entities = transactions.stream()
+        if (newTransactions.isEmpty()) {
+            return new TransactionCreationResult(List.of(), List.of());
+        }
+
+        final List<TransactionDuplicate> duplicateCandidates = findTransactionDuplicates(newTransactions);
+
+        final List<TransactionEntity> toSave = newTransactions.stream()
+            .filter(t -> duplicateCandidates.stream().noneMatch(d -> d.candidate().equals(t)))
             .map(TransactionService::toEntity)
             .toList();
 
-        repository.saveAll(entities);
+        final Iterable<TransactionEntity> saved = repository.saveAll(toSave);
+
+        final List<Long> ids = StreamSupport.stream(saved.spliterator(), false).map(TransactionEntity::getId).toList();
+        final List<Transaction> createdTransactions = repository.findAllProjectionsByIdIsIn(ids).stream()
+            .map(TransactionService::toTransaction)
+            .toList();
+
+        return new TransactionCreationResult(createdTransactions, duplicateCandidates);
     }
 
     private static Transaction toTransaction(TransactionEntityProjection projection) {
@@ -71,6 +120,27 @@ public class TransactionService {
             projection.getReference(),
             projection.getCustomerReference(),
             projection.getStatus()
+        );
+    }
+
+    private static Transaction toTransaction(TransactionEntity entity) {
+        final String ibanPayer = entity.getIbanPayer();
+        final String ibanPayee = entity.getIbanPayee();
+        return new Transaction(
+            new TransactionId(entity.getId()),
+            entity.getBookingDate(),
+            Optional.ofNullable(entity.getValueDate()),
+            entity.getProcedure(),
+            Optional.ofNullable(hasText(ibanPayer) ? new IBAN(ibanPayer) : null),
+            entity.getPayer(),
+            Optional.ofNullable(hasText(ibanPayee) ? new IBAN(ibanPayee) : null),
+            entity.getPayee(),
+            "", // TODO maybe?
+            entity.getRevenueType(),
+            new Money(entity.getAmount(), Currency.getInstance(entity.getCurrency())),
+            entity.getReference(),
+            entity.getCustomerReference(),
+            entity.getStatus()
         );
     }
 

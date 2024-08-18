@@ -1,19 +1,36 @@
 package org.bseber.haushalt.transactions;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 class ImportPreviewDto {
 
+    @Valid
+    @NotNull
+    private List<TransactionConflictDto> conflicts;
+
+    @Valid
+    @NotNull
     private List<TransactionImportDto> transactions;
 
-    public ImportPreviewDto() {
-        this.transactions = new ArrayList<>();
+    ImportPreviewDto() {
+        this(new ArrayList<>(), new ArrayList<>());
     }
 
-    public ImportPreviewDto(List<TransactionImportDto> transactions) {
+    ImportPreviewDto(List<TransactionConflictDto> conflicts, List<TransactionImportDto> transactions) {
+        this.conflicts = conflicts;
         this.transactions = transactions;
+    }
+
+    public List<TransactionConflictDto> getConflicts() {
+        return conflicts;
+    }
+
+    public void setConflicts(List<TransactionConflictDto> conflicts) {
+        this.conflicts = conflicts;
     }
 
     public List<TransactionImportDto> getTransactions() {
@@ -23,24 +40,4 @@ class ImportPreviewDto {
     public void setTransactions(List<TransactionImportDto> transactions) {
         this.transactions = transactions;
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) return true;
-        if (obj == null || obj.getClass() != this.getClass()) return false;
-        var that = (ImportPreviewDto) obj;
-        return Objects.equals(this.transactions, that.transactions);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(transactions);
-    }
-
-    @Override
-    public String toString() {
-        return "ImportPreviewDto[" +
-            "transactions=" + transactions + ']';
-    }
-
 }

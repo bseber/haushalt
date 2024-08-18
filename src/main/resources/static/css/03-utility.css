@@ -61,13 +61,23 @@
 .mt-2 {
   margin-top: var(--gap-2);
 }
-
+.mt-4 {
+  margin-top: var(--gap-4);
+}
+.mt-6 {
+  margin-top: var(--gap-6);
+}
 .mt-8 {
   margin-top: var(--gap-8);
 }
 
 .p-4 {
   padding: var(--gap-4);
+}
+
+.px-4 {
+  padding-left: var(--gap-4);
+  padding-right: var(--gap-4);
 }
 
 .pr-4 {
@@ -160,4 +170,20 @@
 
 .overflow-auto {
   overflow: auto;
+}
+
+.sticky {
+  position: sticky;
+}
+
+.top-0 {
+  top: 0;
+}
+
+.rounded-sm {
+  border-radius: var(--radius-sm);
+}
+
+.rounded {
+  border-radius: var(--radius);
 }

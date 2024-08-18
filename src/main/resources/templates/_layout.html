@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
   <head
     th:fragment="head(title)"
     th:with="
@@ -47,6 +47,8 @@
     <meta th:if="${turboReload}" name="turbo-visit-control" content="reload" />
   </head>
   <body th:fragment="body(content)" data-theme="dark">
-    <main th:replace="${content}">content block</main>
+    <turbo-frame id="frame-page" refresh="morph" data-turbo-action="advance">
+      <main th:replace="${content}">content block</main>
+    </turbo-frame>
   </body>
 </html>

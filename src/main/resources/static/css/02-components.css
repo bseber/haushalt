@@ -1,9 +1,18 @@
+html {
+  height: 100%;
+}
 body {
+  height: 100%;
+  display: flex;
+  overflow: hidden;
+}
+body > turbo-frame {
+  width: 100%;
+  height: 100%;
   display: grid;
   grid-template-columns: auto auto 1fr auto;
   grid-template-rows: auto 1fr;
   gap: var(--gap-4);
-  height: 100vh;
   overflow: hidden;
 }
 

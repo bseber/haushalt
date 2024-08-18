@@ -1,5 +1,6 @@
 package org.bseber.haushalt.transactions;
 
+import org.springframework.data.domain.Example;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 
@@ -9,6 +10,8 @@ import java.util.Optional;
 
 interface TransactionRepository extends CrudRepository<TransactionEntity, Long> {
 
+    List<TransactionEntity> findAllBy(List<Example<TransactionEntity>> examples);
+
     @Query("""
         select t.*,
                COALESCE(m.mapped_name, '') as mapped_payee
@@ -17,6 +20,15 @@ interface TransactionRepository extends CrudRepository<TransactionEntity, Long> 
         where t.id = :id
         """)
     Optional<TransactionEntityProjection> findProjectionById(Long id);
+
+    @Query("""
+        select t.*,
+               COALESCE(m.mapped_name, '') as mapped_payee
+        from transaction t
+          left join payee_name_mapping m on t.payee = m.original_name
+        where t.id in (:ids)
+        """)
+    List<TransactionEntityProjection> findAllProjectionsByIdIsIn(List<Long> ids);
 
     @Query("""
         select t.*,
