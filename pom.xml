@@ -20,6 +20,13 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
+  <scm>
+    <url>https://github.com/bseber/haushalt</url>
+    <developerConnection>scm:git:git@github.com:bseber/haushalt.git</developerConnection>
+    <connection>scm:git:git@github.com:bseber/haushalt.git</connection>
+    <tag>HEAD</tag>
+  </scm>
+
   <dependencies>
 
     <dependency>

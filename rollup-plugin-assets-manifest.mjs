@@ -62,6 +62,7 @@ export function assetsManifest({ output, publicPath}) {
       // sort keys alphabetically
       bundledEntryPoints.sort(([nameA], [nameB]) => nameA.localeCompare(nameB));
 
+      fs.mkdirSync(output.substring(0, output.lastIndexOf("/")), { recursive: true });
       fs.writeFileSync(output, JSON.stringify(Object.fromEntries(bundledEntryPoints), undefined, 2), "utf8");
     },
   };
