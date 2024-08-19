@@ -1,4 +1,5 @@
 import * as Turbo from "@hotwired/turbo";
+import {Idiomorph} from "idiomorph/dist/idiomorph.esm.js";
 
 console.log("Turbo 🐌 enabled.", Turbo);
 
@@ -16,6 +17,14 @@ document.addEventListener("turbo:before-cache", function (event) {
 
 document.addEventListener("turbo:before-render", function (event) {
   console.log("turbo:before-render", event.detail);
+  // morph all the things!
+  event.detail.render = (currentElement, newElement) => {
+    Idiomorph.morph(currentElement, newElement, {
+      head: {
+        style: "morph", // order is important for stylesheets! (utility classes has to be last)
+      },
+    });
+  };
 });
 
 document.addEventListener("turbo:render", function (event) {
@@ -37,6 +46,37 @@ document.addEventListener("turbo:render", function (event) {
     );
   }
 });
+
+
+
+document.addEventListener("turbo:before-frame-render", function (event) {
+  console.log("turbo:before-frame-render", event.detail);
+  // morph all the things!
+  event.detail.render = (currentElement, newElement) => {
+    console.log("current / to", currentElement.attributes);
+    console.log("new / from", newElement.attributes);
+    Idiomorph.morph(currentElement, newElement, {
+      head: {
+        style: "morph", // order is important for stylesheets! (utility classes has to be last)
+      },
+      morphStyle: 'innerHTML',
+    });
+  };
+});
+
+document.addEventListener("turbo:frame-render", function (event) {
+  console.log("turbo:frame-render", event.detail);
+});
+
+document.addEventListener("turbo:frame-load", function (event) {
+  console.log("turbo:frame-load", event.detail);
+});
+
+document.addEventListener("turbo:frame-missing", function (event) {
+  console.log("turbo:frame-missing", event.detail);
+});
+
+
 
 document.addEventListener("turbo:morph", function (event) {
   console.log("turbo:morph", event.detail);

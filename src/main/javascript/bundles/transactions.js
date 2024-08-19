@@ -1,12 +1,4 @@
-import {
-  BarController,
-  BarElement,
-  CategoryScale,
-  Chart,
-  Colors,
-  LinearScale,
-  Tooltip,
-} from "chart.js";
+import {BarController, BarElement, CategoryScale, Chart, Colors, LinearScale, Tooltip,} from "chart.js";
 import "../components/transactions-list.js";
 
 Chart.register(
@@ -65,7 +57,7 @@ function initChart() {
 // });
 
 document.addEventListener("turbo:load", function (event) {
-  console.log("turbo:load", event.detail);
+  console.log("transactions ::: turbo:load", event.detail);
   if (window.location.pathname === "/transactions") {
     console.log("init chart");
     initChart();

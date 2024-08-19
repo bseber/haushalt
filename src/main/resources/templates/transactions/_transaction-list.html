@@ -16,9 +16,9 @@
           th:href="@{/transactions/{id} (id=${transaction.id})}"
           class="transaction-card"
           th:classappend="${transaction.active ? 'active' : ''}"
-          data-turbo-action="advance"
+          data-turbo-frame="_top"
+          data-turbo-refresh-method="morph"
         >
-          <!--      data-turbo-frame="frame-main"-->
           <span
             class="transaction-card__booking-date"
             th:text="${#temporals.format(transaction.bookingDate, 'LONG')}"
