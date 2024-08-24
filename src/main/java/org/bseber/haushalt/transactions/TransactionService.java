@@ -108,11 +108,11 @@ public class TransactionService {
         return new Transaction(
             new TransactionId(projection.getId()),
             projection.getBookingDate(),
-            Optional.ofNullable(projection.getValueDate()),
+            projection.getValueDate(),
             projection.getProcedure(),
-            Optional.ofNullable(hasText(ibanPayer) ? new IBAN(ibanPayer) : null),
+            hasText(ibanPayer) ? new IBAN(ibanPayer) : null,
             projection.getPayer(),
-            Optional.ofNullable(hasText(ibanPayee) ? new IBAN(ibanPayee) : null),
+            hasText(ibanPayee) ? new IBAN(ibanPayee) : null,
             projection.getPayee(),
             projection.getMappedPayee(),
             projection.getRevenueType(),
@@ -129,11 +129,11 @@ public class TransactionService {
         return new Transaction(
             new TransactionId(entity.getId()),
             entity.getBookingDate(),
-            Optional.ofNullable(entity.getValueDate()),
+            entity.getValueDate(),
             entity.getProcedure(),
-            Optional.ofNullable(hasText(ibanPayer) ? new IBAN(ibanPayer) : null),
+            hasText(ibanPayer) ? new IBAN(ibanPayer) : null,
             entity.getPayer(),
-            Optional.ofNullable(hasText(ibanPayee) ? new IBAN(ibanPayee) : null),
+            hasText(ibanPayee) ? new IBAN(ibanPayee) : null,
             entity.getPayee(),
             "", // TODO maybe?
             entity.getRevenueType(),
@@ -144,21 +144,21 @@ public class TransactionService {
         );
     }
 
-    private static TransactionEntity toEntity(HasTransactionFields transaction) {
+    private static TransactionEntity toEntity(NewTransaction newTransaction) {
         final TransactionEntity entity = new TransactionEntity();
-        entity.setBookingDate(transaction.bookingDate());
-        entity.setValueDate(transaction.valueDate().orElse(null));
-        entity.setProcedure(transaction.procedure());
-        entity.setIbanPayer(transaction.payerIban().map(IBAN::value).orElse(""));
-        entity.setPayer(transaction.payer());
-        entity.setIbanPayee(transaction.payeeIban().map(IBAN::value).orElse(""));
-        entity.setPayee(transaction.payee());
-        entity.setAmount(transaction.amount().amount());
-        entity.setCurrency(transaction.amount().currency().getCurrencyCode());
-        entity.setRevenueType(transaction.revenueType());
-        entity.setReference(transaction.reference());
-        entity.setCustomerReference(transaction.customerReference());
-        entity.setStatus(transaction.status());
+        entity.setBookingDate(newTransaction.bookingDate());
+        entity.setValueDate(newTransaction.valueDate().orElse(null));
+        entity.setProcedure(newTransaction.procedure());
+        entity.setIbanPayer(newTransaction.payerIban().map(IBAN::value).orElse(""));
+        entity.setPayer(newTransaction.payer());
+        entity.setIbanPayee(newTransaction.payeeIban().map(IBAN::value).orElse(""));
+        entity.setPayee(newTransaction.payee());
+        entity.setAmount(newTransaction.amount().amount());
+        entity.setCurrency(newTransaction.amount().currency().getCurrencyCode());
+        entity.setRevenueType(newTransaction.revenueType());
+        entity.setReference(newTransaction.reference());
+        entity.setCustomerReference(newTransaction.customerReference());
+        entity.setStatus(newTransaction.status());
         return entity;
     }
 }

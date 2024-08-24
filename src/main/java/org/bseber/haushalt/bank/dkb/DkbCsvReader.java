@@ -126,11 +126,11 @@ class DkbCsvReader implements TransactionFileReader {
     private static NewTransaction toTransaction(DkbCsvTransaktion dkbTransaktion) {
         return new NewTransaction(
             dkbTransaktion.bookingDate(),
-            dkbTransaktion.valueDate(),
+            dkbTransaktion.valueDate().orElse(null),
             toProcedure(dkbTransaktion),
-            Optional.empty(),
+            null,
             dkbTransaktion.payer(),
-            Optional.of(dkbTransaktion.iban()),
+            dkbTransaktion.iban(),
             dkbTransaktion.payee(),
             toTyp(dkbTransaktion.type()),
             dkbTransaktion.amount(),

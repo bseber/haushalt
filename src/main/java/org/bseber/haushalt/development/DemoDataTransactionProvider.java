@@ -11,7 +11,6 @@ import java.time.Month;
 import java.util.Arrays;
 import java.util.Currency;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 import static java.time.temporal.TemporalAdjusters.firstDayOfMonth;
@@ -69,11 +68,11 @@ class DemoDataTransactionProvider {
 
         return new NewTransaction(
             bookingDate,
-            Optional.of(valueDate),
+            valueDate,
             random(Transaction.Procedure.values()),
-            Optional.empty(),
+            null,
             random(PAYERS),
-            Optional.of(new IBAN(random(IBANS))),
+            new IBAN(random(IBANS)),
             random(PAYEES),
             // TODO also create AMOUNT_COMING_IN
             Transaction.RevenueType.AMOUNT_COMING_OUT,

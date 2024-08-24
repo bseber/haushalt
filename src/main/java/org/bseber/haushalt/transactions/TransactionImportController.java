@@ -65,8 +65,8 @@ class TransactionImportController {
     @PostMapping
     public String importFilePreview(@RequestParam("file") MultipartFile multipartFile, RedirectAttributes redirectAttributes) {
 
-        final List<NewTransaction> transactions = readFile(multipartFile);
-        final List<TransactionDuplicate> conflicts = transactionService.findTransactionDuplicates(transactions);
+        final List<NewTransaction> newTransactions = readFile(multipartFile);
+        final List<TransactionDuplicate> conflicts = transactionService.findTransactionDuplicates(newTransactions);
 
         final List<TransactionConflictDto> conflictDtos = conflicts.stream().map(conflict -> {
             final TransactionImportDto candidateDto = toTransactionImportDto(conflict.candidate());
@@ -74,7 +74,7 @@ class TransactionImportController {
             return new TransactionConflictDto(candidateDto, suggestionDtos);
         }).toList();
 
-        final List<TransactionImportDto> dtos = transactions
+        final List<TransactionImportDto> dtos = newTransactions
             .stream()
             .filter(transaction -> conflicts.stream().noneMatch(conflict -> conflict.matches(transaction)))
             .map(TransactionImportController::toTransactionImportDto)
@@ -156,14 +156,14 @@ class TransactionImportController {
     }
 
     private static NewTransaction toTransaction(TransactionImportDto dto) {
-        IBAN iban = hasText(dto.getIban()) ? new IBAN(dto.getIban()) : null;
+        final IBAN iban = hasText(dto.getIban()) ? new IBAN(dto.getIban()) : null;
         return new NewTransaction(
             dto.getBookingDate(),
-            Optional.ofNullable(dto.getValueDate()),
+            dto.getValueDate(),
             dto.getProcedure(),
-            Optional.empty(),
+            null,
             dto.getPayer(),
-            Optional.ofNullable(iban),
+            iban,
             dto.getPayee(),
             dto.getRevenueType(),
             Money.ofEUR(dto.getAmount()),
@@ -203,19 +203,19 @@ class TransactionImportController {
         };
     }
 
-    private static TransactionImportDto toTransactionImportDto(HasTransactionFields transaction) {
+    private static TransactionImportDto toTransactionImportDto(NewTransaction newTransaction) {
         return new TransactionImportDto(
-            transaction.bookingDate(),
-            transaction.valueDate().orElse(null),
-            transaction.procedure(),
-            transaction.payer(),
-            transaction.payee(),
-            transaction.reference(),
-            transaction.revenueType(),
-            transaction.payeeIban().map(IBAN::value).orElse(""),
-            transaction.amount().amount(),
-            transaction.customerReference(),
-            transaction.status()
+            newTransaction.bookingDate(),
+            newTransaction.valueDate().orElse(null),
+            newTransaction.procedure(),
+            newTransaction.payer(),
+            newTransaction.payee(),
+            newTransaction.reference(),
+            newTransaction.revenueType(),
+            newTransaction.payeeIban().map(IBAN::value).orElse(""),
+            newTransaction.amount().amount(),
+            newTransaction.customerReference(),
+            newTransaction.status()
         );
     }
 }

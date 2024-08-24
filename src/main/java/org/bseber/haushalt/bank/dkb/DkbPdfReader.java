@@ -98,15 +98,14 @@ class DkbPdfReader extends AbstractTransactionPdfReader {
         final boolean comingIn = revenueType == Transaction.RevenueType.AMOUNT_COMING_IN;
 
         final LocalDate bookingDate = toBookingDate(block);
-        final Optional<LocalDate> valueDate = Optional.of(bookingDate); // or empty? dunno
         final Transaction.Procedure procedure = toProcedure(block);
         final String payer = comingIn ? toName(block) : accountOwner.name();
         final String payee = comingIn ? accountOwner.name() : toName(block);
-        final Optional<IBAN> payerIban = comingIn ? toIban(block) : Optional.of(accountOwner.iban());
-        final Optional<IBAN> payeeIban = comingIn ? Optional.of(accountOwner.iban()) : toIban(block);
+        final IBAN payerIban = comingIn ? toIban(block) : accountOwner.iban();
+        final IBAN payeeIban = comingIn ? accountOwner.iban() : toIban(block);
         final Money amount = toAmount(block);
 
-        return new NewTransaction(bookingDate, valueDate, procedure, payerIban, payer, payeeIban, payee,
+        return new NewTransaction(bookingDate, bookingDate, procedure, payerIban, payer, payeeIban, payee,
             revenueType, amount, "", "", Transaction.Status.EXPENSED);
     }
 
@@ -173,7 +172,7 @@ class DkbPdfReader extends AbstractTransactionPdfReader {
         return nameCandidate.strip();
     }
 
-    private static Optional<IBAN> toIban(DkbPdfTransactionBlock block) {
+    private static IBAN toIban(DkbPdfTransactionBlock block) {
 
         final List<String> lines = block.lines();
 
@@ -181,11 +180,11 @@ class DkbPdfReader extends AbstractTransactionPdfReader {
             final String line = lines.get(i);
             final String prev = lines.get(i - 1);
             if (prev.endsWith("Gläubiger-ID:")) {
-                return Optional.of(new IBAN(line));
+                return new IBAN(line);
             }
         }
 
-        return Optional.empty();
+        return null;
     }
 
     private static Transaction.RevenueType toRevenueType(DkbPdfTransactionBlock block) {

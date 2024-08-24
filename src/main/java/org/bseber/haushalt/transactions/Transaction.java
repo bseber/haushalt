@@ -1,45 +1,34 @@
 package org.bseber.haushalt.transactions;
 
+import jakarta.annotation.Nullable;
 import org.bseber.haushalt.core.IBAN;
 import org.bseber.haushalt.core.Money;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
-import java.util.Optional;
+import java.util.Objects;
 
-/**
- *
- * @param id id of the transaction
- * @param bookingDate booking date
- * @param valueDate optional value date, empty when status is {@link Transaction.Status#BOOKED booked}.
- * @param procedure procedure
- * @param payerIban optional payer {@link IBAN}
- * @param payer name of the payer
- * @param payeeIban optional payee {@link IBAN}
- * @param payee name of the payee
- * @param mappedPayee user mapped name of the payee. (e.g. "Amazon Payments Europe XYZ" is mapped to "Amazon")
- * @param revenueType revenue type
- * @param amount amount
- * @param reference reference
- * @param customerReference customer reference
- * @param status status
- */
-public record Transaction(
-    TransactionId id,
-    LocalDate bookingDate,
-    Optional<LocalDate> valueDate,
-    Procedure procedure,
-    Optional<IBAN> payerIban,
-    String payer,
-    Optional<IBAN> payeeIban,
-    String payee,
-    String mappedPayee,
-    RevenueType revenueType,
-    Money amount,
-    String reference,
-    String customerReference,
-    Transaction.Status status
-) implements HasTransactionFields {
+
+public final class Transaction extends NewTransaction {
+
+    private final TransactionId id;
+    private final String mappedPayee;
+
+    public Transaction(TransactionId id, LocalDate bookingDate, @Nullable LocalDate valueDate, Procedure procedure,
+                       @Nullable IBAN payerIban, String payer, @Nullable IBAN payeeIban, String payee, String mappedPayee,
+                       RevenueType revenueType, Money amount, String reference, String customerReference, Status status) {
+        super(bookingDate, valueDate, procedure, payerIban, payer, payeeIban, payee, revenueType, amount, reference, customerReference, status);
+        this.id = id;
+        this.mappedPayee = mappedPayee;
+    }
+
+    public TransactionId id() {
+        return id;
+    }
+
+    public String mappedPayee() {
+        return mappedPayee;
+    }
 
     /**
      * returns {@link Transaction#mappedPayee()} when not empty, otherwise {@link Transaction#payee()}
@@ -50,7 +39,28 @@ public record Transaction(
         if (StringUtils.hasText(mappedPayee)) {
             return mappedPayee;
         }
-        return payee;
+        return super.payee();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Transaction that = (Transaction) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), id);
+    }
+
+    @Override
+    public String toString() {
+        return "Transaction{" +
+            "id=" + id +
+            '}';
     }
 
     public enum RevenueType {
