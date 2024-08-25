@@ -71,15 +71,15 @@ class TransactionDetailController {
         return "redirect:/transactions/" + id;
     }
 
-    @PostMapping(value = "/tags", params = "add-tag")
-    public String addTagToTransaction(@PathVariable Long id, @RequestParam("new-tag-name") String name) {
+    @PostMapping(value = "/tags/add")
+    public String addTagToTransaction(@PathVariable Long id, @RequestParam("tag") String tag) {
 
-        if (!hasText(name)) {
+        if (!hasText(tag)) {
             // TODO error feedback
             return "redirect:/transactions/" + id;
         }
 
-        tagService.addTagToTransaction(new TransactionId(id), TagName.sanitized(name));
+        tagService.addTagToTransaction(new TransactionId(id), TagName.sanitized(tag));
         return "redirect:/transactions/" + id;
     }
 

@@ -154,23 +154,29 @@
               </button>
             </div>
           </form>
-          <form
-            class="mt-8"
-            action="#"
-            th:action="@{/transactions/{id}/tags (id=${transaction.id})}"
-            method="post"
-            th:object="${transaction}"
-          >
+          <div class="mt-8">
             <h3 th:text="#{transaction-detail.tags.heading}">Tags</h3>
-            <div class="mt-4 flex items-center gap-1">
+            <p
+              th:if="${#lists.isEmpty(transaction.tags)}"
+              th:text="#{transaction-detail.tags.empty}"
+            >
+              Der Transaktion wurden noch keine Tags zugewiesen.
+            </p>
+            <form
+              class="mt-4 flex items-center gap-1"
+              action="#"
+              th:action="@{/transactions/{id}/tags/add (id=${transaction.id})}"
+              method="post"
+            >
               <label
                 for="new-tag-input"
                 th:text="#{transaction-detail.tags.form.new.label}"
-                >Tag</label
               >
+                Tag
+              </label>
               <input
                 id="new-tag-input"
-                name="new-tag-name"
+                name="tag"
                 type="text"
                 list="tag-name-datalist"
                 class="self-stretch"
@@ -189,19 +195,18 @@
                 type="submit"
                 class="button-secondary button--small"
                 name="add-tag"
-                th:formaction="@{/transactions/{id}/tags (id=${transaction.id})}"
                 th:text="#{transaction-detail.tags.form.new.button.text}"
               >
                 Tag hinzufügen
               </button>
-            </div>
-            <div class="mt-8">
-              <p
-                th:if="${#lists.isEmpty(transaction.tags)}"
-                th:text="#{transaction-detail.tags.empty}"
-              >
-                Der Transaktion wurden noch keine Tags zugewiesen.
-              </p>
+            </form>
+            <form
+              class="mt-8"
+              action="#"
+              th:action="@{/transactions/{id}/tags (id=${transaction.id})}"
+              method="post"
+              th:object="${transaction}"
+            >
               <ul
                 th:if="${not #lists.isEmpty(transaction.tags)}"
                 class="transaction-tag-list"
@@ -236,8 +241,8 @@
                   Tags aktualisieren
                 </button>
               </div>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
         <div
           id="frame-transactions"
