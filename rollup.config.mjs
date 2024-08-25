@@ -26,13 +26,17 @@ export default {
     entryFileNames: isProduction ? `[name].[hash].js` : `[name].js`,
     // custom assets like css files extracted by `rollup-plugin-styles`
     assetFileNames: "[name].[hash].[ext]",
-    // manualChunks(id) {
-    //   if (id.includes("node_modules")) {
-    //     const packageName = id.match(/[/\\]node_modules[/\\](.*?)([/\\]|$)/)[1];
-    //     // npm package names are URL-safe, but some servers don't like @ symbols
-    //     return `npm.${packageName.replace("@", "")}`;
-    //   }
-    // },
+    manualChunks(id) {
+      if (id.includes("@hotwired")) {
+        return `npm.hotwired`;
+      }
+      if (id.includes("chart.js")) {
+        return `npm.chartjs`;
+      }
+      if (id.includes("idiomorph")) {
+        return `npm.idiomorph`;
+      }
+    },
   },
   plugins: [
     {
