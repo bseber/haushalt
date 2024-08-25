@@ -1,9 +1,3 @@
-[data-theme="dark"] {
-  .error {
-    border: 1px solid red;
-  }
-}
-
 .transaction-import-list {
   display: grid;
   column-gap: var(--gap);

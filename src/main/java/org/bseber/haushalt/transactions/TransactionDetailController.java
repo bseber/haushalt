@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -72,10 +73,10 @@ class TransactionDetailController {
     }
 
     @PostMapping(value = "/tags/add")
-    public String addTagToTransaction(@PathVariable Long id, @RequestParam("tag") String tag) {
+    public String addTagToTransaction(@PathVariable Long id, @RequestParam("tag") String tag, RedirectAttributes redirectAttributes) {
 
         if (!hasText(tag)) {
-            // TODO error feedback
+            redirectAttributes.addFlashAttribute("tagNameEmptyError", true);
             return "redirect:/transactions/" + id;
         }
 

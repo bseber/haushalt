@@ -180,6 +180,9 @@
                 type="text"
                 list="tag-name-datalist"
                 class="self-stretch"
+                th:with="invalid=${#bools.isTrue(tagNameEmptyError)}"
+                th:aria-invalid="${invalid ? 'true' : null}"
+                th:aria-errormessage="${invalid ? 'add-tag-error-message' : null}"
               />
               <datalist id="tag-name-datalist">
                 <option
@@ -199,6 +202,14 @@
               >
                 Tag hinzufügen
               </button>
+              <p
+                th:if="${tagNameEmptyError}"
+                th:text="#{tag.validation.constraint.name.notEmpty.message}"
+                class="error"
+                id="add-tag-error-message"
+              >
+                Error Feedback
+              </p>
             </form>
             <form
               class="mt-8"
