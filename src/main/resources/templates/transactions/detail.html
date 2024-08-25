@@ -238,6 +238,7 @@
                       name="tag"
                       th:value="${tag.name}"
                       th:checked="${true}"
+                      data-auto-submit
                     />
                     <th:block th:text="${tag.name}">Restaurant</th:block>
                   </label>
@@ -247,6 +248,7 @@
                 <button
                   type="submit"
                   class="button-secondary"
+                  id="transaction-detail-tags-update-button"
                   th:text="#{transaction-detail.tags.form.submit}"
                 >
                   Tags aktualisieren
