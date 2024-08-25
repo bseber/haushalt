@@ -3,7 +3,9 @@
   <head
     th:replace="~{_layout::head(title=~{::title}, preload=~{::preload}, scriptsDefer=~{::scriptsDefer}, styles=~{::styles})}"
   >
-    <title>Haushalt - Transaktionen</title>
+    <title th:text="#{transactions-import.title}">
+      Haushalt - Transaktionen
+    </title>
     <th:block th:fragment="styles">
       <link rel="stylesheet" th:href="@{/css/transactions-import.css}" />
     </th:block>
@@ -12,11 +14,13 @@
   </head>
   <body th:replace="~{_layout::body(~{::content})}">
     <th:block th:ref="content">
-      <div th:replace="~{_navigation::top('Transaktionen', ~{})}"></div>
+      <div
+        th:replace="~{_navigation::top(${#messages.msg('transactions-import.h1')}, ~{})}"
+      ></div>
 
       <main class="layout__content overflow-auto">
         <div class="px-4">
-          <h2>Datei Importieren</h2>
+          <h2 th:text="#{transactions-import.heading}">Datei Importieren</h2>
           <form
             action="#"
             th:action="@{/transactions/import}"
@@ -26,7 +30,7 @@
           >
             <label
               for="file-input"
-              th:text="#{transactions.import.upload.file.label.text}"
+              th:text="#{transactions-import.upload.file.label.text}"
             >
               Datei
             </label>
@@ -38,16 +42,19 @@
             />
             <button
               type="submit"
-              th:text="#{transactions.import.upload.submit.text}"
+              th:text="#{transactions-import.upload.submit.text}"
             >
               Vorschau zeigen
             </button>
           </form>
         </div>
 
-        <p class="mt-8 px-4" th:if="${importedCount}">
-          Es wurden <span th:text="${importedCount}">42</span> neue
-          Transaktionen importiert.
+        <p
+          class="mt-8 px-4"
+          th:if="${importedCount}"
+          th:text="#{transactions-import.feedback.success(${importedCount})}"
+        >
+          Es wurden 42 neue Transaktionen importiert.
         </p>
 
         <th:block th:if="${preview != null}" th:object="${preview}">
@@ -59,24 +66,29 @@
             th:with="conflictsCount=${#lists.size(preview.conflicts)}, previewCount=${#lists.size(preview.transactions)}"
           >
             <p class="mt-4">
-              <th:block th:if="${conflictsCount > 0 && previewCount > 0}">
-                Es wurden
-                <th:block th:text="${conflictsCount}">42</th:block> Konflikte
-                und <th:block th:text="${previewCount}">42</th:block> neue
-                Transaktionen erkannt.
+              <th:block
+                th:if="${conflictsCount > 0 && previewCount > 0}"
+                th:text="#{transaction-import.detected.conflicts-and-new(${previewCount}, ${conflictsCount})}"
+              >
+                42 Konflikte, 5 neue erkannt.
               </th:block>
-              <th:block th:if="${conflictsCount == 0 && previewCount == 0}">
+              <th:block
+                th:if="${conflictsCount == 0 && previewCount == 0}"
+                th:text="#{transaction-import.detected.nothing}"
+              >
                 Es wurden keine Transaktionen erkannt.
               </th:block>
-              <th:block th:if="${conflictsCount == 0 && previewCount > 0}">
-                Es wurden
-                <th:block th:text="${previewCount}">42</th:block> neue
-                Transaktionen erkannt.
+              <th:block
+                th:if="${conflictsCount == 0 && previewCount > 0}"
+                th:text="#{transaction-import.detected.new(${previewCount})}"
+              >
+                5 neue Transaktionen erkannt.
               </th:block>
-              <th:block th:if="${conflictsCount > 0 && previewCount == 0}">
-                Es wurden
-                <th:block th:text="${conflictsCount}">42</th:block> Konflikte
-                und keine neuen Transaktionen erkannt.
+              <th:block
+                th:if="${conflictsCount > 0 && previewCount == 0}"
+                th:text="#{transaction-import.detected.conflicts(${conflictsCount})}"
+              >
+                42 Konflikte, keine neuen erkannt.
               </th:block>
             </p>
             <p
@@ -88,18 +100,23 @@
                 border-radius: var(--radius);
                 border: 1px solid red;
               "
+              th:text="#{transactions-import.feedback.error}"
             >
-              Transaktionen konnten nicht importiert werden. Bitte prüfe deine
-              Eingaben.
+              Eingaben prüfen
             </p>
             <th:block th:if="${conflictsCount > 0}">
-              <h2 class="mt-4" style="background-color: var(--color-slate-950)">
+              <h2
+                class="mt-4"
+                style="background-color: var(--color-slate-950)"
+                th:text="#{transaction-import.conflicts.heading}"
+              >
                 Konflikte
               </h2>
-              <p class="mt-1">
-                Transaktionen die möglicherweise schon existieren. Wähle aus,
-                was trotzdem importiert werden soll. Die Transaktionen werden
-                nicht vereint. Es werden neue Einträge erstellt.
+              <p
+                class="mt-1"
+                th:text="#{transaction-import.conflicts.description}"
+              >
+                Beschreibungstext
               </p>
               <ul
                 class="mt-4 transaction-import-list transaction-import-list-conflicts"
@@ -113,7 +130,7 @@
                     <span class="transaction-import-me">
                       <label
                         class="sr-only"
-                        th:text="#{transactions.import.preview.conflicts.import.checkbox.label}"
+                        th:text="#{transactions-import.preview.conflicts.checkbox.label}"
                       ></label>
                       <input
                         type="checkbox"
@@ -156,7 +173,7 @@
                   </div>
                   <ul
                     class="transaction-import-suggestions"
-                    aria-label="Vorschläge an bereits existierenden Transaktionen"
+                    th:aria-label="#{transaction-import.conflicts.suggestion.list.label}"
                   >
                     <li
                       th:each="suggestion : ${conflict.suggestions}"
@@ -256,7 +273,7 @@
               </ul>
             </th:block>
             <div class="mt-8" th:if="${previewCount > 0}">
-              <h2 th:text="#{transactions.import.preview.heading.text}"></h2>
+              <h2 th:text="#{transactions-import.preview.heading.text}"></h2>
               <ul class="transaction-import-list mt-4">
                 <li th:replace="~{::list-head}"></li>
                 <li
@@ -304,7 +321,7 @@
             <div class="mt-8">
               <button
                 type="submit"
-                th:text="#{transactions.import.submit.text}"
+                th:text="#{transactions-import.submit.text}"
                 data-turbo-action="replace"
               ></button>
             </div>
@@ -323,23 +340,23 @@
       aria-hidden="true"
       class="transaction-import-list__head sticky top-0"
     >
-      <span th:text="#{transactions.import.preview.booking-date}"></span>
-      <span th:text="#{transactions.import.preview.value-date}"></span>
-      <span th:text="#{transactions.import.preview.status}"></span>
-      <span th:text="#{transactions.import.preview.payer}"></span>
-      <span th:text="#{transactions.import.preview.payee}"></span>
-      <span th:text="#{transactions.import.preview.procedure}"></span>
-      <span th:text="#{transactions.import.preview.reference}"></span>
-      <span th:text="#{transactions.import.preview.revenue-type}"></span>
-      <span th:text="#{transactions.import.preview.iban}"></span>
-      <span th:text="#{transactions.import.preview.amount}"></span>
-      <span th:text="#{transactions.import.preview.customer-reference}"></span>
+      <span th:text="#{transactions-import.preview.booking-date}"></span>
+      <span th:text="#{transactions-import.preview.value-date}"></span>
+      <span th:text="#{transactions-import.preview.status}"></span>
+      <span th:text="#{transactions-import.preview.payer}"></span>
+      <span th:text="#{transactions-import.preview.payee}"></span>
+      <span th:text="#{transactions-import.preview.procedure}"></span>
+      <span th:text="#{transactions-import.preview.reference}"></span>
+      <span th:text="#{transactions-import.preview.revenue-type}"></span>
+      <span th:text="#{transactions-import.preview.iban}"></span>
+      <span th:text="#{transactions-import.preview.amount}"></span>
+      <span th:text="#{transactions-import.preview.customer-reference}"></span>
     </li>
 
     <span th:fragment="booking-date(field)" class="transaction-booking-date">
       <label
         class="sr-only"
-        th:text="#{transactions.import.preview.booking-date}"
+        th:text="#{transactions-import.preview.booking-date}"
       ></label>
       <input type="date" th:errorclass="error" th:field="*{__${field}__}" />
     </span>
@@ -347,7 +364,7 @@
     <span th:fragment="value-date(field)" class="transaction-value-date">
       <label
         class="sr-only"
-        th:text="#{transactions.import.preview.value-date}"
+        th:text="#{transactions-import.preview.value-date}"
       ></label>
       <input type="date" th:errorclass="error" th:field="*{__${field}__}" />
     </span>
@@ -355,7 +372,7 @@
     <span th:fragment="status(field)" class="transaction-status">
       <label
         class="sr-only"
-        th:text="#{transactions.import.preview.status}"
+        th:text="#{transactions-import.preview.status}"
       ></label>
       <select th:errorclass="error" th:field="*{__${field}__}">
         <option disabled value="">Status...</option>
@@ -370,7 +387,7 @@
     <span th:fragment="payer(field)" class="transaction-payer">
       <label
         class="sr-only"
-        th:text="#{transactions.import.preview.payer}"
+        th:text="#{transactions-import.preview.payer}"
       ></label>
       <input type="text" th:errorclass="error" th:field="*{__${field}__}" />
     </span>
@@ -378,7 +395,7 @@
     <span th:fragment="payee(field)" class="transaction-payee">
       <label
         class="sr-only"
-        th:text="#{transactions.import.preview.payee}"
+        th:text="#{transactions-import.preview.payee}"
       ></label>
       <input type="text" th:errorclass="error" th:field="*{__${field}__}" />
     </span>
@@ -386,7 +403,7 @@
     <span th:fragment="procedure(field)" class="transaction-procedure">
       <label
         class="sr-only"
-        th:text="#{transactions.import.preview.procedure}"
+        th:text="#{transactions-import.preview.procedure}"
       ></label>
       <select th:errorclass="error" th:field="*{__${field}__}">
         <option value="" disabled>Vorgang</option>
@@ -424,7 +441,7 @@
     <span th:fragment="reference(field)" class="transaction-reference">
       <label
         class="sr-only"
-        th:text="#{transactions.import.preview.reference}"
+        th:text="#{transactions-import.preview.reference}"
       ></label>
       <input type="text" th:errorclass="error" th:field="*{__${field}__}" />
     </span>
@@ -432,7 +449,7 @@
     <span th:fragment="revenue-type(field)" class="transaction-revenue-type">
       <label
         class="sr-only"
-        th:text="#{transactions.import.preview.revenue-type}"
+        th:text="#{transactions-import.preview.revenue-type}"
       ></label>
       <select th:errorclass="error" th:field="*{__${field}__}">
         <option disabled value="">Typ...</option>
@@ -450,7 +467,7 @@
     <span th:fragment="iban(field)" class="transaction-iban">
       <label
         class="sr-only"
-        th:text="#{transactions.import.preview.iban}"
+        th:text="#{transactions-import.preview.iban}"
       ></label>
       <input type="text" th:errorclass="error" th:field="*{__${field}__}" />
     </span>
@@ -458,7 +475,7 @@
     <span th:fragment="amount(field)" class="transaction-amount">
       <label
         class="sr-only"
-        th:text="#{transactions.import.preview.amount}"
+        th:text="#{transactions-import.preview.amount}"
       ></label>
       <input type="text" th:errorclass="error" th:field="*{__${field}__}" />
     </span>
@@ -469,7 +486,7 @@
     >
       <label
         class="sr-only"
-        th:text="#{transactions.import.preview.customer-reference}"
+        th:text="#{transactions-import.preview.customer-reference}"
       ></label>
       <input type="text" th:errorclass="error" th:field="*{__${field}__}" />
     </span>

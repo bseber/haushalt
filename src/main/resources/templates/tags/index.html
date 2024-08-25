@@ -3,7 +3,7 @@
   <head
     th:replace="~{_layout::head(title=~{::title}, preload=~{::preload}, scriptsDefer=~{::scriptsDefer}, styles=~{::styles})}"
   >
-    <title>Haushalt - Tags</title>
+    <title th:text="#{tags.title}">Haushalt - Tags</title>
     <th:block th:fragment="styles">
       <link rel="stylesheet" th:href="@{/css/settings.css}" />
       <link rel="stylesheet" th:href="@{/css/settings-tags.css}" />
@@ -13,18 +13,22 @@
   </head>
   <body th:replace="~{_layout::body(~{::content})}">
     <th:block th:ref="content">
-      <div th:replace="~{_navigation::top('Einstellungen', ~{})}"></div>
+      <div
+        th:replace="~{_navigation::top(${#messages.msg('tags.h1')}, ~{})}"
+      ></div>
 
       <main class="layout__content p-4">
         <nav th:replace="~{settings/index::navigation}"></nav>
         <div class="mt-8">
           <h1>Tags</h1>
-          <p class="mt-2">
-            Mit Tags kannst du Transaktionen gruppieren und deine Ausgaben und
-            Einnahmen besser im Auge behalten.
-          </p>
+          <p class="mt-2" th:text="#{tags.description}">Beschreibungstext</p>
           <div class="mt-4">
-            <a href="#" th:href="@{/tags/new}" class="button-secondary">
+            <a
+              href="#"
+              th:href="@{/tags/new}"
+              class="button-secondary"
+              th:text="#{tags.create}"
+            >
               Neue Tags erstellen
             </a>
           </div>
@@ -44,12 +48,9 @@
               <li
                 th:each="tag : ${bucket.tags}"
                 th:with="i=${tagStat.index}"
-                class="tag-list__card flex gap-0.5"
+                class="flex gap-0.5"
               >
-                <span
-                  th:with="fieldId=${'tag-name-input-' + i}"
-                  class="tag-name"
-                >
+                <span th:with="fieldId=${'tag-name-input-' + i}">
                   <label
                     for="tag-name-input"
                     th:for="${fieldId}"
@@ -65,10 +66,7 @@
                     th:field="*{tags[__${i}__].name}"
                   />
                 </span>
-                <span
-                  th:with="fieldId=${'tag-description-input-' + i}"
-                  class="tag-description"
-                >
+                <span th:with="fieldId=${'tag-description-input-' + i}">
                   <label
                     for="tag-description-input"
                     th:for="${fieldId}"
@@ -84,10 +82,7 @@
                     th:field="*{tags[__${i}__].description}"
                   />
                 </span>
-                <span
-                  th:with="fieldId=${'tag-budget-input-' + i}"
-                  class="tag-budget"
-                >
+                <span th:with="fieldId=${'tag-budget-input-' + i}">
                   <label
                     for="tag-budget-input"
                     th:for="${fieldId}"
@@ -103,32 +98,32 @@
                     th:field="*{tags[__${i}__].budget}"
                   />
                 </span>
-                <span
-                  th:with="fieldId=${'tag-budget-type-select-' + i}"
-                  class="tag-budget-typet"
-                >
+                <span th:with="fieldId=${'tag-budget-type-select-' + i}">
                   <label
                     for="tag-budget-type-select"
                     th:for="${fieldId}"
                     class="sr-only"
                     th:text="#{tag.budget-type}"
                   >
-                    Budget-Art
+                    Turnus
                   </label>
                   <select
                     id="tag-budget-type-select"
                     th:id="${fieldId}"
                     th:field="*{tags[__${i}__].budgetType}"
                   >
-                    <option value="" disabled>Budget-Art</option>
-                    <option value="MONTH">Monat</option>
-                    <option value="YEAR">Jahr</option>
+                    <option value="" disabled th:text="#{tag.budget-type}">
+                      Turnus
+                    </option>
+                    <option value="MONTH" th:text="#{tag.budget-type.MONTH}">
+                      Monat
+                    </option>
+                    <option value="YEAR" th:text="#{tag.budget-type.YEAR}">
+                      Jahr
+                    </option>
                   </select>
                 </span>
-                <span
-                  th:with="fieldId=${'tag-color-select-' + i}"
-                  class="tag-color"
-                >
+                <span th:with="fieldId=${'tag-color-select-' + i}">
                   <label
                     for="tag-color-select"
                     th:for="${fieldId}"
@@ -142,14 +137,18 @@
                     th:id="${fieldId}"
                     th:field="*{tags[__${i}__].color}"
                   >
-                    <option value="" disabled>Farbe</option>
-                    <option value="LIME">Limette</option>
+                    <option value="" disabled th:text="#{tag.color}">
+                      Farbe
+                    </option>
+                    <option value="LIME" th:text="#{tag.color.LIME}">
+                      Limette
+                    </option>
                   </select>
                 </span>
               </li>
             </ul>
             <div class="mt-4">
-              <button type="submit" th:text="#{tag.settings.save}">
+              <button type="submit" th:text="#{tags.edit.submit}">
                 Änderungen übernehmen
               </button>
             </div>

@@ -3,7 +3,7 @@
   <head
     th:replace="~{_layout::head(title=~{::title}, styles=~{::styles}, preload=~{::preload}, scriptsDefer=~{::scriptsDefer})}"
   >
-    <title>Haushalt - Transaktion</title>
+    <title th:text="#{transaction-detail.title}">Haushalt - Transaktion</title>
     <th:block th:fragment="styles">
       <link
         rel="stylesheet"
@@ -24,7 +24,7 @@
   <body th:replace="~{_layout::body(~{::content})}">
     <th:block th:ref="content">
       <div
-        th:replace="~{_navigation::top('Transaktionen', ~{::transactions-filter})}"
+        th:replace="~{_navigation::top(${#messages.msg('transactions.h1')}, ~{::transactions-filter})}"
       >
         <form
           th:ref="transactions-filter"
@@ -34,11 +34,19 @@
           method="get"
           class="transactions-view__filter flex items-center gap-1"
         >
-          <label for="filter-from-input">von</label>
+          <label for="filter-from-input" th:text="#{transactions.filter.from}"
+            >von</label
+          >
           <input id="filter-from-input" type="date" th:field="*{from}" />
-          <label for="filter-to-input">bis</label>
+          <label for="filter-to-input" th:text="#{transactions.filter.to}"
+            >bis</label
+          >
           <input id="filter-to-input" type="date" th:field="*{to}" />
-          <button type="submit" data-turbo-action="replace">
+          <button
+            type="submit"
+            data-turbo-action="replace"
+            th:text="#{transactions.filter.submit}"
+          >
             Aktualisieren
           </button>
         </form>
@@ -50,7 +58,7 @@
           th:fragment="frame-main(transaction)"
           class="transaction-view__detail"
         >
-          <h2>Transaktion</h2>
+          <h2 th:text="#{transaction-detail.heading}">Transaktion</h2>
           <form
             action="#"
             th:action="@{/transactions/{id} (id=${transaction.id})}"
@@ -59,14 +67,22 @@
           >
             <div>
               <div>
-                <label for="payee-input">Empfänger</label>
+                <label
+                  for="payee-input"
+                  th:text="#{transaction-detail.form.payee.label}"
+                  >Empfänger</label
+                >
                 <input
                   id="payee-input"
                   type="text"
                   readonly
                   th:field="*{payee}"
                 />
-                <label for="mapped-payee-input">Mapped Empfänger</label>
+                <label
+                  for="mapped-payee-input"
+                  th:text="#{transaction-detail.form.payee.mapped.label}"
+                  >Mapped Empfänger</label
+                >
                 <input
                   id="mapped-payee-input"
                   type="text"
@@ -75,7 +91,11 @@
                 />
               </div>
               <div>
-                <label for="payer-input">Sender</label>
+                <label
+                  for="payer-input"
+                  th:text="#{transaction-detail.form.payer.label}"
+                  >Sender</label
+                >
                 <input
                   id="payer-input"
                   type="text"
@@ -84,7 +104,11 @@
                 />
               </div>
               <div>
-                <label for="reference-input">Verwendungszweck</label>
+                <label
+                  for="reference-input"
+                  th:text="#{transaction-detail.form.reference.label}"
+                  >Verwendungszweck</label
+                >
                 <input
                   id="reference-input"
                   type="text"
@@ -93,7 +117,11 @@
                 />
               </div>
               <div>
-                <label for="customer-reference-input">Kundenreferenz</label>
+                <label
+                  for="customer-reference-input"
+                  th:text="#{transaction-detail.form.customer-reference.label}"
+                  >Kundenreferenz</label
+                >
                 <input
                   id="customer-reference-input"
                   type="text"
@@ -102,7 +130,11 @@
                 />
               </div>
               <div>
-                <label for="amount-input">Betrag</label>
+                <label
+                  for="amount-input"
+                  th:text="#{transaction-detail.form.amount.label}"
+                  >Betrag</label
+                >
                 <input
                   id="amount-input"
                   type="text"
@@ -113,7 +145,11 @@
               </div>
             </div>
             <div class="mt-4">
-              <button type="submit" class="button-secondary">
+              <button
+                type="submit"
+                class="button-secondary"
+                th:text="#{transaction-detail.form.submit}"
+              >
                 Änderungen übernehmen
               </button>
             </div>
@@ -125,11 +161,11 @@
             method="post"
             th:object="${transaction}"
           >
-            <h3>Tags</h3>
+            <h3 th:text="#{transaction-detail.tags.heading}">Tags</h3>
             <div class="mt-4 flex items-center gap-1">
               <label
                 for="new-tag-input"
-                th:text="#{transaction.edit.tags.new.label}"
+                th:text="#{transaction-detail.tags.form.new.label}"
                 >Tag</label
               >
               <input
@@ -154,13 +190,16 @@
                 class="button-secondary button--small"
                 name="add-tag"
                 th:formaction="@{/transactions/{id}/tags (id=${transaction.id})}"
-                th:text="#{transaction.edit.tags.new.button.text}"
+                th:text="#{transaction-detail.tags.form.new.button.text}"
               >
                 Tag hinzufügen
               </button>
             </div>
             <div class="mt-8">
-              <p th:if="${#lists.isEmpty(transaction.tags)}">
+              <p
+                th:if="${#lists.isEmpty(transaction.tags)}"
+                th:text="#{transaction-detail.tags.empty}"
+              >
                 Der Transaktion wurden noch keine Tags zugewiesen.
               </p>
               <ul
@@ -192,7 +231,7 @@
                 <button
                   type="submit"
                   class="button-secondary"
-                  th:text="#{transaction.edit.tags.submit}"
+                  th:text="#{transaction-detail.tags.form.submit}"
                 >
                   Tags aktualisieren
                 </button>

@@ -8,7 +8,7 @@
       <div class="layout__title flex items-center gap-2">
         <a href="#" th:href="@{/transactions}" class="home-link">
           <svg th:replace="~{icons/landmark::svg}"></svg>
-          <span class="sr-only">Start</span>
+          <span class="sr-only" th:text="#{navigation.home}">Start</span>
         </a>
         <h1 th:text="${title}">Titel</h1>
       </div>
@@ -19,7 +19,9 @@
         <ul class="navigation">
           <li>
             <a class="navigation__icon-button" href="#" th:href="@{/settings}">
-              <span class="sr-only">Einstellungen</span>
+              <span class="sr-only" th:text="#{navigation.settings}"
+                >Einstellungen</span
+              >
               <svg th:replace="~{icons/settings-2::svg}"></svg>
             </a>
           </li>
@@ -28,6 +30,7 @@
               class="button-secondary"
               href="#"
               th:href="@{/transactions/import}"
+              th:text="#{navigation.import}"
             >
               Importieren
             </a>

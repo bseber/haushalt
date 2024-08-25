@@ -3,7 +3,7 @@
   <head
     th:replace="~{_layout::head(title=~{::title}, preload=~{::preload}, scriptsDefer=~{::scriptsDefer}, styles=~{::styles})}"
   >
-    <title>Haushalt - Transaktionen</title>
+    <title th:text="#{transactions.title}">Haushalt - Transaktionen</title>
     <th:block th:fragment="styles">
       <link
         rel="stylesheet"
@@ -24,7 +24,7 @@
   <body th:replace="~{_layout::body(~{::content})}">
     <th:block th:ref="content">
       <div
-        th:replace="~{_navigation::top('Transaktionen', ~{::transactions-filter})}"
+        th:replace="~{_navigation::top(${#messages.msg('transactions.h1')}, ~{::transactions-filter})}"
       >
         <form
           th:ref="transactions-filter"

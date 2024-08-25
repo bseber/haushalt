@@ -3,7 +3,9 @@
   <head
     th:replace="~{_layout::head(title=~{::title}, preload=~{::preload}, scriptsDefer=~{::scriptsDefer}, styles=~{::styles})}"
   >
-    <title>Haushalt - Zahlungsempfänger</title>
+    <title th:text="#{payees-mapping.title}">
+      Haushalt - Zahlungsempfänger
+    </title>
     <th:block th:fragment="styles">
       <link rel="stylesheet" th:href="@{/css/settings.css}" />
       <link rel="stylesheet" th:href="@{/css/payee-name-mapping.css}" />
@@ -13,7 +15,9 @@
   </head>
   <body th:replace="~{_layout::body(~{::content})}">
     <th:block th:ref="content">
-      <div th:replace="~{_navigation::top('Einstellungen', ~{})}"></div>
+      <div
+        th:replace="~{_navigation::top(${#messages.msg('payees-mapping.h1')}, ~{})}"
+      ></div>
 
       <main class="layout__content p-4">
         <nav th:replace="~{settings/index::navigation}"></nav>
@@ -33,8 +37,10 @@
               for="payee-name"
               th:for="${'payee-name-' + mappingStat.index}"
               class="payee-name-mapping__card__label"
-              >Empfänger</label
+              th:text="#{payees-mapping.form.payee.label}"
             >
+              Empfänger
+            </label>
             <input
               id="payee-name"
               th:id="${'payee-name-' + mappingStat.index}"
@@ -46,8 +52,10 @@
               for="payee-name-mapped"
               th:for="${'payee-name-mapped-' + mappingStat.index}"
               class="payee-name-mapping__card__label"
-              >Gemapped zu</label
+              th:text="#{payees-mapping.form.payee-mapped.label}"
             >
+              Gemapped zu
+            </label>
             <input
               id="payee-name-mapped"
               th:id="${'payee-name-mapped-' + mappingStat.index}"
@@ -56,7 +64,13 @@
             />
           </div>
           <div>
-            <button class="button" type="submit">Änderungen übernehmen</button>
+            <button
+              class="button"
+              type="submit"
+              th:text="#{payees-mapping.form.submit}"
+            >
+              Änderungen übernehmen
+            </button>
           </div>
         </form>
       </main>

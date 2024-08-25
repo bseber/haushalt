@@ -3,7 +3,7 @@
   <head
     th:replace="~{_layout::head(title=~{::title}, preload=~{::preload}, scriptsDefer=~{::scriptsDefer}, styles=~{::styles})}"
   >
-    <title>Haushalt - Einstellungen</title>
+    <title th:text="#{settings.title}">Haushalt - Einstellungen</title>
     <th:block th:fragment="styles">
       <link rel="stylesheet" th:href="@{/css/settings.css}" />
     </th:block>
@@ -12,19 +12,33 @@
   </head>
   <body th:replace="~{_layout::body(~{::content})}">
     <th:block th:ref="content">
-      <div th:replace="~{_navigation::top('Einstellungen', ~{})}"></div>
+      <div
+        th:replace="~{_navigation::top(${#messages.msg('settings.h1')}, ~{})}"
+      ></div>
 
       <main class="layout__content p-4">
-        <nav th:fragment="navigation" aria-label="Einstellungen">
+        <nav
+          th:fragment="navigation"
+          th:aria-label="#{settings.sub-navigation.aria-label}"
+        >
           <ul>
             <li>
-              <a href="#" th:href="@{/payees}">
-                <th:block th:text="${url}"></th:block>
+              <a
+                href="#"
+                th:href="@{/payees}"
+                th:text="#{settings.sub-navigation.payees}"
+              >
                 Zahlungsempfänger
               </a>
             </li>
             <li>
-              <a href="#" th:href="@{/tags}">Tags</a>
+              <a
+                href="#"
+                th:href="@{/tags}"
+                th:text="#{settings.sub-navigation.tags}"
+              >
+                Tags
+              </a>
             </li>
           </ul>
         </nav>
