@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+  <head
+    th:replace="~{_layout::head(title=~{::title}, preload=~{::preload}, scriptsDefer=~{::scriptsDefer}, styles=~{::styles})}"
+  >
+    <title>Haushalt - Einstellungen</title>
+    <th:block th:fragment="styles">
+      <link rel="stylesheet" th:href="@{/css/settings.css}" />
+    </th:block>
+    <th:block th:fragment="preload"></th:block>
+    <th:block th:fragment="scriptsDefer"></th:block>
+  </head>
+  <body th:replace="~{_layout::body(~{::content})}">
+    <th:block th:ref="content">
+      <div th:replace="~{_navigation::top('Einstellungen', ~{})}"></div>
+
+      <main class="layout__content p-4">
+        <nav th:fragment="navigation" aria-label="Einstellungen">
+          <ul>
+            <li>
+              <a href="#" th:href="@{/payees}">
+                <th:block th:text="${url}"></th:block>
+                Zahlungsempfänger
+              </a>
+            </li>
+            <li>
+              <a href="#" th:href="@{/tags}">Tags</a>
+            </li>
+          </ul>
+        </nav>
+      </main>
+    </th:block>
+  </body>
+</html>

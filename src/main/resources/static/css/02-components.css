@@ -3,17 +3,11 @@ html {
 }
 body {
   height: 100%;
-  display: flex;
   overflow: hidden;
-}
-body > turbo-frame {
-  width: 100%;
-  height: 100%;
   display: grid;
   grid-template-columns: auto auto 1fr auto;
   grid-template-rows: auto 1fr;
   gap: var(--gap-4);
-  overflow: hidden;
 }
 
 .layout__title {
@@ -109,10 +103,14 @@ table {
 button,
 a[class*="button"] {
   cursor: pointer;
-  padding: calc(var(--gap) * 2) calc(var(--gap) * 3);
+  padding: var(--gap-2) var(--gap-3);
   border-radius: 3px;
   transition: all ease-in-out 150ms;
   font-weight: 500;
+  &.button--small {
+    padding: var(--gap) var(--gap-2);
+    font-size: 0.9em;
+  }
   &:is(a) {
     display: inline-block;
     text-decoration: none;

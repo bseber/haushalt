@@ -1,0 +1,67 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+  <changeSet id="1.0.0-tags" author="bseber">
+
+    <createTable tableName="tag">
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="name" type="varchar">
+        <constraints nullable="false"/>
+      </column>
+      <column name="description" type="varchar">
+        <constraints nullable="false"/>
+      </column>
+      <column name="budget" type="double">
+      </column>
+      <column name="budget_type" type="varchar">
+      </column>
+      <column name="color" type="varchar">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <addUniqueConstraint tableName="tag" columnNames="name" constraintName="UNIQUE_NAME"/>
+  </changeSet>
+
+  <changeSet id="1.0.0-transaction-with-tags" author="bseber">
+
+    <preConditions>
+      <tableExists tableName="tag"/>
+      <tableExists tableName="transaction"/>
+    </preConditions>
+
+    <createTable tableName="transaction_tag">
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="transaction_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="tag_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <addForeignKeyConstraint baseTableName="transaction_tag"
+                             baseColumnNames="transaction_id"
+                             referencedTableName="transaction"
+                             referencedColumnNames="id"
+                             constraintName="FK_TRANSACTIONTAG_TRANSACTION"
+                             onDelete="CASCADE"/>
+
+    <addForeignKeyConstraint baseTableName="transaction_tag"
+                             baseColumnNames="tag_id"
+                             referencedTableName="tag"
+                             referencedColumnNames="id"
+                             constraintName="FK_TRANSACTIONTAG_TAG"
+                             onDelete="CASCADE"/>
+
+    <addUniqueConstraint tableName="transaction_tag"
+                         columnNames="transaction_id,tag_id"
+                         constraintName="UNIQUE_TRANSACTION_TAG" />
+  </changeSet>
+
+</databaseChangeLog>

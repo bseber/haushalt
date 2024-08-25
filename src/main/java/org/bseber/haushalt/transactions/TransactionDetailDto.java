@@ -1,6 +1,7 @@
 package org.bseber.haushalt.transactions;
 
 import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -8,9 +9,14 @@ import org.springframework.format.annotation.NumberFormat;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 class TransactionDetailDto {
+
+    @NotNull
+    @Min(1)
+    private Long id;
 
     @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -47,13 +53,16 @@ class TransactionDetailDto {
     @NotNull
     private Transaction.Status status;
 
+    private List<TransactionTagDto> tags;
+
     public TransactionDetailDto() {
     }
 
-    TransactionDetailDto(LocalDate bookingDate, LocalDate valueDate, Transaction.Procedure procedure,
+    TransactionDetailDto(Long id, LocalDate bookingDate, LocalDate valueDate, Transaction.Procedure procedure,
                          String payer, String payee, String mappedPayee, String reference,
                          Transaction.RevenueType revenueType, String iban, BigDecimal amount,
-                         String customerReference, Transaction.Status status) {
+                         String customerReference, Transaction.Status status, List<TransactionTagDto> tags) {
+        this.id = id;
         this.bookingDate = bookingDate;
         this.valueDate = valueDate;
         this.procedure = procedure;
@@ -66,6 +75,15 @@ class TransactionDetailDto {
         this.amount = amount;
         this.customerReference = customerReference;
         this.status = status;
+        this.tags = tags;
+    }
+
+    public @NotNull @Min(1) Long getId() {
+        return id;
+    }
+
+    public void setId(@NotNull @Min(1) Long id) {
+        this.id = id;
     }
 
     public @NotNull LocalDate getBookingDate() {
@@ -164,32 +182,44 @@ class TransactionDetailDto {
         this.status = status;
     }
 
+    public List<TransactionTagDto> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<TransactionTagDto> tags) {
+        this.tags = tags;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == this) return true;
         if (obj == null || obj.getClass() != this.getClass()) return false;
         var that = (TransactionDetailDto) obj;
-        return Objects.equals(this.bookingDate, that.bookingDate) &&
-            Objects.equals(this.valueDate, that.valueDate) &&
-            Objects.equals(this.procedure, that.procedure) &&
-            Objects.equals(this.payer, that.payer) &&
-            Objects.equals(this.payee, that.payee) &&
-            Objects.equals(this.reference, that.reference) &&
-            Objects.equals(this.revenueType, that.revenueType) &&
-            Objects.equals(this.iban, that.iban) &&
-            Objects.equals(this.amount, that.amount) &&
-            Objects.equals(this.customerReference, that.customerReference) &&
-            Objects.equals(this.status, that.status);
+        return Objects.equals(this.id, that.id)
+            && Objects.equals(this.bookingDate, that.bookingDate)
+            && Objects.equals(this.valueDate, that.valueDate)
+            && Objects.equals(this.procedure, that.procedure)
+            && Objects.equals(this.payer, that.payer)
+            && Objects.equals(this.payee, that.payee)
+            && Objects.equals(this.reference, that.reference)
+            && Objects.equals(this.revenueType, that.revenueType)
+            && Objects.equals(this.iban, that.iban)
+            && Objects.equals(this.amount, that.amount)
+            && Objects.equals(this.customerReference, that.customerReference)
+            && Objects.equals(this.status, that.status)
+            && Objects.equals(this.tags, that.tags);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(bookingDate, valueDate, procedure, payer, payee, reference, revenueType, iban, amount, customerReference, status);
+        return Objects.hash(id, bookingDate, valueDate, procedure, payer, payee, reference, revenueType, iban, amount,
+            customerReference, status, tags);
     }
 
     @Override
     public String toString() {
         return "TransactionDetailDto[" +
+            "id=" + id + ", " +
             "bookingDate=" + bookingDate + ", " +
             "valueDate=" + valueDate + ", " +
             "procedure=" + procedure + ", " +
@@ -200,7 +230,8 @@ class TransactionDetailDto {
             "iban=" + iban + ", " +
             "amount=" + amount + ", " +
             "customerReference=" + customerReference + ", " +
-            "status=" + status + ']';
+            "status=" + status +
+            "tags=" + tags + ']';
     }
 
 }

@@ -30,6 +30,10 @@
   font-variant-numeric: tabular-nums;
 }
 
+.h-full {
+  height: 100%;
+}
+
 .max-w-32 {
   max-width: calc(var(--gap-4) * 32);
 }
@@ -116,6 +120,10 @@
   align-items: flex-end;
 }
 
+.self-stretch {
+  align-self: stretch;
+}
+
 .justify-end {
   justify-content: flex-end;
 }
@@ -134,6 +142,10 @@
 
 .text-violet-800 {
   color: var(--color-slate-800);
+}
+
+.gap-0\.5 {
+  gap: calc(var(--gap) / 2);
 }
 
 .gap-1 {

@@ -3,7 +3,7 @@ package org.bseber.haushalt.web;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-interface ModelAttributeHandlerInterceptor extends HandlerInterceptor {
+public interface ModelAttributeHandlerInterceptor extends HandlerInterceptor {
 
     default boolean shouldAddAttributes(ModelAndView modelAndView) {
 

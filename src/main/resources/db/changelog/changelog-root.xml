@@ -3,5 +3,6 @@
 
   <include file="db/changelog/1.0.0-initial.xml" />
   <include file="db/changelog/1.0.0-payee-name-mappings.xml" />
+  <include file="db/changelog/1.0.0-tags.xml" />
 
 </databaseChangeLog>

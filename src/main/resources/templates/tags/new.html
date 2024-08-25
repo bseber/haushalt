@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+  <head
+    th:replace="~{_layout::head(title=~{::title}, preload=~{::preload}, scriptsDefer=~{::scriptsDefer}, styles=~{::styles})}"
+  >
+    <title>Haushalt - Tags</title>
+    <th:block th:fragment="styles">
+      <link rel="stylesheet" th:href="@{/css/settings.css}" />
+    </th:block>
+    <th:block th:fragment="preload"></th:block>
+    <th:block th:fragment="scriptsDefer"></th:block>
+  </head>
+  <body th:replace="~{_layout::body(~{::content})}">
+    <th:block th:ref="content">
+      <div th:replace="~{_navigation::top('Einstellungen', ~{})}"></div>
+
+      <main class="layout__content p-4">
+        <nav th:replace="~{settings/index::navigation}"></nav>
+        <div class="mt-8">
+          <h1>Neue Tags erstellen</h1>
+          <form
+            class="mt-8"
+            action="#"
+            th:action="@{/tags/new}"
+            method="post"
+            th:object="${newTags}"
+          >
+            <ul th:replace="~{tags/index::tag-list(${newTags})}"></ul>
+            <button type="submit">Tags erstellen</button>
+          </form>
+        </div>
+      </main>
+    </th:block>
+  </body>
+</html>

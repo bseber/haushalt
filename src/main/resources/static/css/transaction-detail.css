@@ -11,3 +11,41 @@
   grid-column: 3 / span 3;
   overflow: auto;
 }
+
+.transaction-tag-list {
+  display: flex;
+  gap: var(--gap);
+  li {
+    font-size: 0.9em;
+    label {
+      display: flex;
+      gap: var(--gap);
+      color: var(--color-lime-950);
+      background-color: var(--color-lime-400);
+      padding: var(--gap-0-5) var(--gap-2);
+      border-radius: 999999px;
+      cursor: pointer;
+      user-select: none;
+      input {
+        outline: none;
+        accent-color: var(--color-lime-50);
+      }
+      &:has(input:focus-visible) {
+        outline: -webkit-focus-ring-color auto 5px;
+        outline-offset: 2px;
+      }
+    }
+  }
+}
+
+.new-tag-button {
+  color: var(--color-lime-950);
+  transition:
+    background-color ease-in-out 0.2s,
+    border-color ease-in-out 0.2s,
+    color ease-in-out 0.2s;
+  background-color: var(--color-lime-500);
+  padding: var(--gap) var(--gap-2);
+  border-radius: 999999px;
+  cursor: pointer;
+}

@@ -1,5 +1,6 @@
 package org.bseber.haushalt.development;
 
+import org.bseber.haushalt.tags.TagService;
 import org.bseber.haushalt.transactions.NewTransaction;
 import org.bseber.haushalt.transactions.TransactionService;
 import org.slf4j.Logger;
@@ -20,13 +21,18 @@ class DemoDataCreator {
     private static final Logger LOG = LoggerFactory.getLogger(lookup().lookupClass());
 
     private final DemoDataTransactionProvider demoDataTransactionProvider;
+    private final DemoDataTagProvider demoDataTagProvider;
     private final TransactionService transactionService;
+    private final TagService tagService;
 
     private static final Random RANDOM = new Random();
 
-    DemoDataCreator(DemoDataTransactionProvider demoDataTransactionProvider, TransactionService transactionService) {
+    DemoDataCreator(DemoDataTransactionProvider demoDataTransactionProvider, DemoDataTagProvider demoDataTagProvider,
+                    TransactionService transactionService, TagService tagService) {
         this.demoDataTransactionProvider = demoDataTransactionProvider;
+        this.demoDataTagProvider = demoDataTagProvider;
         this.transactionService = transactionService;
+        this.tagService = tagService;
     }
 
     @EventListener(ApplicationReadyEvent.class)
@@ -41,6 +47,10 @@ class DemoDataCreator {
             createTransactions(month.minus(2), RANDOM.nextInt(10, 100));
             createTransactions(month.minus(3), RANDOM.nextInt(10, 100));
             LOG.info("Finished creating demo data for transactions.");
+        }
+
+        if (tagService.findAllTags().isEmpty()) {
+            tagService.createNewTag(demoDataTagProvider.createDemoTags());
         }
     }
 

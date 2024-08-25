@@ -44,13 +44,9 @@
     <th:block th:replace="${additional}"></th:block>
 
     <meta name="turbo-prefetch" content="false" />
-<!--    <meta name="turbo-refresh-method" content="morph">-->
-<!--    <meta name="turbo-refresh-scroll" content="preserve">-->
-<!--    <meta th:if="${turboReload}" name="turbo-visit-control" content="reload" />-->
+    <meta name="turbo-cache-control" content="no-cache" />
   </head>
   <body th:fragment="body(content)" data-theme="dark">
-    <turbo-frame id="frame-page" refresh="morph" data-turbo-action="advance" target="_top">
-      <main th:replace="${content}">content block</main>
-    </turbo-frame>
+    <th:block th:replace="${content}">content</th:block>
   </body>
 </html>

@@ -1,5 +1,5 @@
 import * as Turbo from "@hotwired/turbo";
-import {Idiomorph} from "idiomorph/dist/idiomorph.esm.js";
+import { Idiomorph } from "idiomorph/dist/idiomorph.esm.js";
 
 console.log("Turbo 🐌 enabled.", Turbo);
 
@@ -19,10 +19,11 @@ document.addEventListener("turbo:before-render", function (event) {
   console.log("turbo:before-render", event.detail);
   // morph all the things!
   event.detail.render = (currentElement, newElement) => {
+    console.log("morph all the things");
     Idiomorph.morph(currentElement, newElement, {
-      head: {
-        style: "morph", // order is important for stylesheets! (utility classes has to be last)
-      },
+      // head: {
+      //   style: "morph", // order is important for stylesheets! (utility classes has to be last)
+      // },
     });
   };
 });
@@ -47,8 +48,6 @@ document.addEventListener("turbo:render", function (event) {
   }
 });
 
-
-
 document.addEventListener("turbo:before-frame-render", function (event) {
   console.log("turbo:before-frame-render", event.detail);
   // morph all the things!
@@ -59,7 +58,7 @@ document.addEventListener("turbo:before-frame-render", function (event) {
       head: {
         style: "morph", // order is important for stylesheets! (utility classes has to be last)
       },
-      morphStyle: 'innerHTML',
+      morphStyle: "innerHTML",
     });
   };
 });
@@ -75,8 +74,6 @@ document.addEventListener("turbo:frame-load", function (event) {
 document.addEventListener("turbo:frame-missing", function (event) {
   console.log("turbo:frame-missing", event.detail);
 });
-
-
 
 document.addEventListener("turbo:morph", function (event) {
   console.log("turbo:morph", event.detail);

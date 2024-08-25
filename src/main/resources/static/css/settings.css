@@ -1,0 +1,8 @@
+nav > ul {
+  display: flex;
+  gap: var(--gap-4);
+  a {
+    color: var(--color-slate-300);
+    text-decoration: none;
+  }
+}

@@ -5,6 +5,7 @@
   >
     <title>Haushalt - Zahlungsempfänger</title>
     <th:block th:fragment="styles">
+      <link rel="stylesheet" th:href="@{/css/settings.css}" />
       <link rel="stylesheet" th:href="@{/css/payee-name-mapping.css}" />
     </th:block>
     <th:block th:fragment="preload"> </th:block>
@@ -12,15 +13,16 @@
   </head>
   <body th:replace="~{_layout::body(~{::content})}">
     <th:block th:ref="content">
-      <div th:replace="~{_navigation::top('Zahlungsempfänger', ~{})}"></div>
+      <div th:replace="~{_navigation::top('Einstellungen', ~{})}"></div>
 
       <main class="layout__content p-4">
+        <nav th:replace="~{settings/index::navigation}"></nav>
         <form
           action="#"
           th:action="@{/payees/mapping/name}"
           method="post"
           th:object="${nameMapping}"
-          class="payee-name-mapping"
+          class="mt-8 payee-name-mapping"
         >
           <div
             th:each="mapping : ${nameMapping.mappings}"

@@ -1,6 +1,8 @@
 <!doctype html>
 <html lang="de" xmlns:th="http://www.thymeleaf.org">
-  <head th:replace="~{_layout::head(title=~{::title}, styles=~{::styles})}">
+  <head
+    th:replace="~{_layout::head(title=~{::title}, styles=~{::styles}, preload=~{::preload}, scriptsDefer=~{::scriptsDefer})}"
+  >
     <title>Haushalt - Transaktion</title>
     <th:block th:fragment="styles">
       <link
@@ -8,6 +10,15 @@
         th:href="@{/css/transaction-detail.css}"
         data-turbo-track="dynamic"
       />
+    </th:block>
+    <th:block th:fragment="preload">
+      <link
+        rel="preload"
+        th:replace="~{fragments/asset-dependency-preload::links('transaction-detail.js')}"
+      />
+    </th:block>
+    <th:block th:fragment="scriptsDefer">
+      <script defer type="module" asset:src="transaction-detail.js"></script>
     </th:block>
   </head>
   <body th:replace="~{_layout::body(~{::content})}">
@@ -40,25 +51,152 @@
           class="transaction-view__detail"
         >
           <h2>Transaktion</h2>
-          <form action="#" th:object="${transaction}">
+          <form
+            action="#"
+            th:action="@{/transactions/{id} (id=${transaction.id})}"
+            method="post"
+            th:object="${transaction}"
+          >
             <div>
-              <label for="payee-input">Empfänger</label>
-              <input
-                id="payee-input"
-                type="text"
-                readonly
-                th:field="*{payee}"
-              />
-              <label for="mapped-payee-input">Mapped Empfänger</label>
-              <input
-                id="mapped-payee-input"
-                type="text"
-                th:field="*{mappedPayee}"
-              />
+              <div>
+                <label for="payee-input">Empfänger</label>
+                <input
+                  id="payee-input"
+                  type="text"
+                  readonly
+                  th:field="*{payee}"
+                />
+                <label for="mapped-payee-input">Mapped Empfänger</label>
+                <input
+                  id="mapped-payee-input"
+                  type="text"
+                  th:field="*{mappedPayee}"
+                  readonly
+                />
+              </div>
+              <div>
+                <label for="payer-input">Sender</label>
+                <input
+                  id="payer-input"
+                  type="text"
+                  th:field="*{payer}"
+                  readonly
+                />
+              </div>
+              <div>
+                <label for="reference-input">Verwendungszweck</label>
+                <input
+                  id="reference-input"
+                  type="text"
+                  th:field="*{reference}"
+                  readonly
+                />
+              </div>
+              <div>
+                <label for="customer-reference-input">Kundenreferenz</label>
+                <input
+                  id="customer-reference-input"
+                  type="text"
+                  th:field="*{customerReference}"
+                  readonly
+                />
+              </div>
+              <div>
+                <label for="amount-input">Betrag</label>
+                <input
+                  id="amount-input"
+                  type="text"
+                  th:field="*{amount}"
+                  readonly
+                />
+                <span>€</span>
+              </div>
             </div>
-            <div>
-              <label for="reference-input">Verwendungszweck</label>
-              <input id="reference-input" type="text" th:field="*{reference}" />
+            <div class="mt-4">
+              <button type="submit" class="button-secondary">
+                Änderungen übernehmen
+              </button>
+            </div>
+          </form>
+          <form
+            class="mt-8"
+            action="#"
+            th:action="@{/transactions/{id}/tags (id=${transaction.id})}"
+            method="post"
+            th:object="${transaction}"
+          >
+            <h3>Tags</h3>
+            <div class="mt-4 flex items-center gap-1">
+              <label
+                for="new-tag-input"
+                th:text="#{transaction.edit.tags.new.label}"
+                >Tag</label
+              >
+              <input
+                id="new-tag-input"
+                name="new-tag-name"
+                type="text"
+                list="tag-name-datalist"
+                class="self-stretch"
+              />
+              <datalist id="tag-name-datalist">
+                <option
+                  th:each="tag : ${allTagNames}"
+                  value="Restaurant"
+                  th:value="${tag}"
+                  th:text="${tag}"
+                >
+                  Restaurant
+                </option>
+              </datalist>
+              <button
+                type="submit"
+                class="button-secondary button--small"
+                name="add-tag"
+                th:formaction="@{/transactions/{id}/tags (id=${transaction.id})}"
+                th:text="#{transaction.edit.tags.new.button.text}"
+              >
+                Tag hinzufügen
+              </button>
+            </div>
+            <div class="mt-8">
+              <p th:if="${#lists.isEmpty(transaction.tags)}">
+                Der Transaktion wurden noch keine Tags zugewiesen.
+              </p>
+              <ul
+                th:if="${not #lists.isEmpty(transaction.tags)}"
+                class="transaction-tag-list"
+              >
+                <li
+                  th:each="tag : ${transaction.tags}"
+                  th:with="i=${tagStat.index}, fieldId=${'transaction-tag-'+i}"
+                >
+                  <label
+                    for="transaction-tag"
+                    th:for="${fieldId}"
+                    th:classappend="${'tag-color-'+tag.color}"
+                  >
+                    <input
+                      id="transaction-tag"
+                      th:id="${fieldId}"
+                      type="checkbox"
+                      name="tag"
+                      th:value="${tag.name}"
+                      th:checked="${true}"
+                    />
+                    <th:block th:text="${tag.name}">Restaurant</th:block>
+                  </label>
+                </li>
+              </ul>
+              <div class="mt-4" th:if="${not #lists.isEmpty(transaction.tags)}">
+                <button
+                  type="submit"
+                  class="button-secondary"
+                  th:text="#{transaction.edit.tags.submit}"
+                >
+                  Tags aktualisieren
+                </button>
+              </div>
             </div>
           </form>
         </div>

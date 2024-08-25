@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+  <head
+    th:replace="~{_layout::head(title=~{::title}, preload=~{::preload}, scriptsDefer=~{::scriptsDefer}, styles=~{::styles})}"
+  >
+    <title>Haushalt - Tags</title>
+    <th:block th:fragment="styles">
+      <link rel="stylesheet" th:href="@{/css/settings.css}" />
+      <link rel="stylesheet" th:href="@{/css/settings-tags.css}" />
+    </th:block>
+    <th:block th:fragment="preload"></th:block>
+    <th:block th:fragment="scriptsDefer"></th:block>
+  </head>
+  <body th:replace="~{_layout::body(~{::content})}">
+    <th:block th:ref="content">
+      <div th:replace="~{_navigation::top('Einstellungen', ~{})}"></div>
+
+      <main class="layout__content p-4">
+        <nav th:replace="~{settings/index::navigation}"></nav>
+        <div class="mt-8">
+          <h1>Tags</h1>
+          <p class="mt-2">
+            Mit Tags kannst du Transaktionen gruppieren und deine Ausgaben und
+            Einnahmen besser im Auge behalten.
+          </p>
+          <div class="mt-4">
+            <a href="#" th:href="@{/tags/new}" class="button-secondary">
+              Neue Tags erstellen
+            </a>
+          </div>
+          <form
+            class="mt-8"
+            action="#"
+            th:action="@{/tags}"
+            method="post"
+            th:object="${tags}"
+          >
+            <ul
+              th:fragment="tag-list(bucket)"
+              th:with="bucket=${#objects.nullSafe(bucket, tags)}"
+              class="tag-list"
+            >
+              <li th:replace="~{::list-head}"></li>
+              <li
+                th:each="tag : ${bucket.tags}"
+                th:with="i=${tagStat.index}"
+                class="tag-list__card flex gap-0.5"
+              >
+                <span
+                  th:with="fieldId=${'tag-name-input-' + i}"
+                  class="tag-name"
+                >
+                  <label
+                    for="tag-name-input"
+                    th:for="${fieldId}"
+                    class="sr-only"
+                    th:text="#{tag.name}"
+                  >
+                    Name
+                  </label>
+                  <input
+                    id="tag-name-input"
+                    th:id="${fieldId}"
+                    type="text"
+                    th:field="*{tags[__${i}__].name}"
+                  />
+                </span>
+                <span
+                  th:with="fieldId=${'tag-description-input-' + i}"
+                  class="tag-description"
+                >
+                  <label
+                    for="tag-description-input"
+                    th:for="${fieldId}"
+                    class="sr-only"
+                    th:text="#{tag.description}"
+                  >
+                    Beschreibung
+                  </label>
+                  <input
+                    id="tag-description-input"
+                    th:id="${fieldId}"
+                    type="text"
+                    th:field="*{tags[__${i}__].description}"
+                  />
+                </span>
+                <span
+                  th:with="fieldId=${'tag-budget-input-' + i}"
+                  class="tag-budget"
+                >
+                  <label
+                    for="tag-budget-input"
+                    th:for="${fieldId}"
+                    class="sr-only"
+                    th:text="#{tag.budget}"
+                  >
+                    Budget
+                  </label>
+                  <input
+                    id="tag-budget-input"
+                    th:id="${fieldId}"
+                    type="text"
+                    th:field="*{tags[__${i}__].budget}"
+                  />
+                </span>
+                <span
+                  th:with="fieldId=${'tag-budget-type-select-' + i}"
+                  class="tag-budget-typet"
+                >
+                  <label
+                    for="tag-budget-type-select"
+                    th:for="${fieldId}"
+                    class="sr-only"
+                    th:text="#{tag.budget-type}"
+                  >
+                    Budget-Art
+                  </label>
+                  <select
+                    id="tag-budget-type-select"
+                    th:id="${fieldId}"
+                    th:field="*{tags[__${i}__].budgetType}"
+                  >
+                    <option value="" disabled>Budget-Art</option>
+                    <option value="MONTH">Monat</option>
+                    <option value="YEAR">Jahr</option>
+                  </select>
+                </span>
+                <span
+                  th:with="fieldId=${'tag-color-select-' + i}"
+                  class="tag-color"
+                >
+                  <label
+                    for="tag-color-select"
+                    th:for="${fieldId}"
+                    class="sr-only"
+                    th:text="#{tag.color}"
+                  >
+                    Farbe
+                  </label>
+                  <select
+                    id="tag-color-select"
+                    th:id="${fieldId}"
+                    th:field="*{tags[__${i}__].color}"
+                  >
+                    <option value="" disabled>Farbe</option>
+                    <option value="LIME">Limette</option>
+                  </select>
+                </span>
+              </li>
+            </ul>
+            <div class="mt-4">
+              <button type="submit" th:text="#{tag.settings.save}">
+                Änderungen übernehmen
+              </button>
+            </div>
+          </form>
+        </div>
+      </main>
+    </th:block>
+
+    <!--
+     cell fragments
+     this is not rendered in final html since this is not part of the main block used to be replaced in <body>.
+    -->
+
+    <li
+      th:fragment="list-head"
+      aria-hidden="true"
+      class="tag-list__head sticky top-0"
+    >
+      <span th:text="#{tag.name}"></span>
+      <span th:text="#{tag.description}"></span>
+      <span th:text="#{tag.budget}"></span>
+      <span th:text="#{tag.budget-type}"></span>
+      <span th:text="#{tag.color}"></span>
+    </li>
+  </body>
+</html>

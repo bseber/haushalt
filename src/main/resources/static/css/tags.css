@@ -1,0 +1,7 @@
+:root {
+  --tag-color-lime: var(--color-lime-400);
+}
+
+.tag-color-LIME {
+  background-color: var(--tag-color-lime);
+}
