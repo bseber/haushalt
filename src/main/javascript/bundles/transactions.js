@@ -1,4 +1,12 @@
-import {BarController, BarElement, CategoryScale, Chart, Colors, LinearScale, Tooltip,} from "chart.js";
+import {
+  BarController,
+  BarElement,
+  CategoryScale,
+  Chart,
+  Colors,
+  LinearScale,
+  Tooltip,
+} from "chart.js";
 import "../components/transactions-list.js";
 
 Chart.register(
@@ -43,18 +51,6 @@ function initChart() {
     },
   });
 }
-
-// document.addEventListener("turbo:before-visit", function (event) {
-//   console.log("turbo:before-visit", window.location.href, event.detail.url);
-//   if (
-//     window.location.href === "/" &&
-//     window.location.href === event.detail.url
-//   ) {
-//     // nothing to navigate again
-//     // TODO check why turbo wants to load it again?
-//     event.preventDefault();
-//   }
-// });
 
 document.addEventListener("turbo:load", function (event) {
   console.log("transactions ::: turbo:load", event.detail);
