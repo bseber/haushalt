@@ -21,18 +21,26 @@
         <nav th:replace="~{settings/index::navigation}"></nav>
         <div class="mt-8">
           <h2 th:text="#{tags-new.heading}">Neue Tags erstellen</h2>
-          <form
-            class="mt-8"
-            action="#"
-            th:action="@{/tags/new}"
-            method="post"
-            th:object="${newTags}"
-          >
-            <ul th:replace="~{tags/index::tag-list(${newTags})}"></ul>
-            <button type="submit" th:text="#{tags-new.submit}">
-              Tags erstellen
-            </button>
-          </form>
+          <th:block th:object="${newTags}">
+            <p
+              class="mt-4 error"
+              th:if="${#fields.hasErrors()}"
+              th:text="#{tags-new.feedback.error}"
+            >
+              Eingaben prüfen
+            </p>
+            <form
+              class="mt-8"
+              action="#"
+              th:action="@{/tags/new}"
+              method="post"
+            >
+              <ul th:replace="~{tags/index::tag-list(${newTags})}"></ul>
+              <button class="mt-4" type="submit" th:text="#{tags-new.submit}">
+                Tags erstellen
+              </button>
+            </form>
+          </th:block>
         </div>
       </main>
     </th:block>

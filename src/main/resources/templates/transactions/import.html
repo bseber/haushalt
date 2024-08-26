@@ -92,14 +92,8 @@
               </th:block>
             </p>
             <p
-              class="mt-4"
+              class="mt-4 error"
               th:if="${#fields.hasErrors()}"
-              style="
-                padding: var(--gap-4);
-                color: red;
-                border-radius: var(--radius);
-                border: 1px solid red;
-              "
               th:text="#{transactions-import.feedback.error}"
             >
               Eingaben prüfen

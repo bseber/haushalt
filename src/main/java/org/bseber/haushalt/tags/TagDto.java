@@ -1,6 +1,5 @@
 package org.bseber.haushalt.tags;
 
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import org.bseber.haushalt.core.BudgetType;
 
@@ -9,29 +8,11 @@ import java.util.Objects;
 
 class TagDto {
 
-    /**
-     * marker to group constraint validation for creating a new tag.
-     */
-    interface Create {}
-
-    /**
-     * marker to group constraint validation for editing an existing tag.
-     */
-    interface Update {}
-
-    @NotNull(groups = Update.class)
     private Long id;
-
-    @NotEmpty(groups = {Create.class, Update.class})
     private String name;
-
     private String description;
-
     private BigDecimal budget;
-
     private BudgetType budgetType;
-
-    @NotNull(groups = {Create.class, Update.class})
     private TagColor color;
 
     public Long getId() {

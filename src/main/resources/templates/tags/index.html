@@ -32,127 +32,165 @@
               Neue Tags erstellen
             </a>
           </div>
-          <form
-            class="mt-8"
-            action="#"
-            th:action="@{/tags}"
-            method="post"
-            th:object="${tags}"
-          >
-            <ul
-              th:fragment="tag-list(bucket)"
-              th:with="bucket=${#objects.nullSafe(bucket, tags)}"
-              class="tag-list"
+          <th:block th:object="${tags}">
+            <p
+              class="mt-4 error"
+              th:if="${#fields.hasErrors()}"
+              th:text="#{tags.feedback.error}"
             >
-              <li th:replace="~{::list-head}"></li>
-              <li
-                th:each="tag : ${bucket.tags}"
-                th:with="i=${tagStat.index}"
-                class="flex gap-0.5"
+              Eingaben prüfen
+            </p>
+            <form class="mt-8" action="#" th:action="@{/tags}" method="post">
+              <ul
+                th:fragment="tag-list(bucket)"
+                th:with="bucket=${#objects.nullSafe(bucket, tags)}"
+                class="tag-list"
               >
-                <span th:with="fieldId=${'tag-name-input-' + i}">
-                  <label
-                    for="tag-name-input"
-                    th:for="${fieldId}"
-                    class="sr-only"
-                    th:text="#{tag.name}"
+                <li th:replace="~{::list-head}"></li>
+                <li
+                  th:each="tag : ${bucket.tags}"
+                  th:with="i=${tagStat.index},path=${'tags['+i+'].'}"
+                  class="flex gap-0.5"
+                >
+                  <span
+                    th:with="fieldId=${'tag-name-input-' + i}, hasError=${#fields.hasErrors(path + 'name')}"
                   >
-                    Name
-                  </label>
-                  <input
-                    id="tag-name-input"
-                    th:id="${fieldId}"
-                    type="text"
-                    th:field="*{tags[__${i}__].name}"
-                  />
-                </span>
-                <span th:with="fieldId=${'tag-description-input-' + i}">
-                  <label
-                    for="tag-description-input"
-                    th:for="${fieldId}"
-                    class="sr-only"
-                    th:text="#{tag.description}"
+                    <label
+                      for="tag-name-input"
+                      th:for="${fieldId}"
+                      class="sr-only"
+                      th:text="#{tag.name}"
+                    >
+                      Name
+                    </label>
+                    <input
+                      id="tag-name-input"
+                      th:id="${fieldId}"
+                      type="text"
+                      th:field="*{tags[__${i}__].name}"
+                      th:errorclass="error"
+                      th:aria-invalid="${hasError ?: 'true'}"
+                      th:aria-errormessage="${hasError ?: fieldId + '-error'}"
+                    />
+                    <span
+                      th:if="${hasError}"
+                      th:text="${#fields.errors(path + 'name')[0]}"
+                      th:id="${fieldId + '-error'}"
+                      class="sr-only error"
+                    ></span>
+                  </span>
+                  <span
+                    th:with="fieldId=${'tag-description-input-' + i}, hasError=${#fields.hasErrors(path + 'description')}"
                   >
-                    Beschreibung
-                  </label>
-                  <input
-                    id="tag-description-input"
-                    th:id="${fieldId}"
-                    type="text"
-                    th:field="*{tags[__${i}__].description}"
-                  />
-                </span>
-                <span th:with="fieldId=${'tag-budget-input-' + i}">
-                  <label
-                    for="tag-budget-input"
-                    th:for="${fieldId}"
-                    class="sr-only"
-                    th:text="#{tag.budget}"
+                    <label
+                      for="tag-description-input"
+                      th:for="${fieldId}"
+                      class="sr-only"
+                      th:text="#{tag.description}"
+                    >
+                      Beschreibung
+                    </label>
+                    <input
+                      id="tag-description-input"
+                      th:id="${fieldId}"
+                      type="text"
+                      th:field="*{tags[__${i}__].description}"
+                      th:errorclass="error"
+                      th:aria-invalid="${hasError ?: 'true'}"
+                      th:aria-errormessage="${hasError ?: fieldId + '-error'}"
+                    />
+                    <span
+                      th:if="${hasError}"
+                      th:text="${#fields.errors(path + 'description')[0]}"
+                      th:id="${fieldId + '-error'}"
+                      class="sr-only error"
+                    ></span>
+                  </span>
+                  <span
+                    th:with="fieldId=${'tag-budget-input-' + i}, hasError=${#fields.hasErrors(path + 'budget')}"
                   >
-                    Budget
-                  </label>
-                  <input
-                    id="tag-budget-input"
-                    th:id="${fieldId}"
-                    type="text"
-                    th:field="*{tags[__${i}__].budget}"
-                  />
-                </span>
-                <span th:with="fieldId=${'tag-budget-type-select-' + i}">
-                  <label
-                    for="tag-budget-type-select"
-                    th:for="${fieldId}"
-                    class="sr-only"
-                    th:text="#{tag.budget-type}"
-                  >
-                    Turnus
-                  </label>
-                  <select
-                    id="tag-budget-type-select"
-                    th:id="${fieldId}"
-                    th:field="*{tags[__${i}__].budgetType}"
-                  >
-                    <option value="" disabled th:text="#{tag.budget-type}">
+                    <label
+                      for="tag-budget-input"
+                      th:for="${fieldId}"
+                      class="sr-only"
+                      th:text="#{tag.budget}"
+                    >
+                      Budget
+                    </label>
+                    <input
+                      id="tag-budget-input"
+                      th:id="${fieldId}"
+                      type="text"
+                      th:field="*{tags[__${i}__].budget}"
+                      th:errorclass="error"
+                      th:aria-invalid="${hasError ?: 'true'}"
+                      th:aria-errormessage="${hasError ?: fieldId + '-error'}"
+                    />
+                    <span
+                      th:if="${hasError}"
+                      th:text="${#fields.errors(path + 'budget')[0]}"
+                      th:id="${fieldId + '-error'}"
+                      class="sr-only error"
+                    ></span>
+                  </span>
+                  <span th:with="fieldId=${'tag-budget-type-select-' + i}">
+                    <label
+                      for="tag-budget-type-select"
+                      th:for="${fieldId}"
+                      class="sr-only"
+                      th:text="#{tag.budget-type}"
+                    >
                       Turnus
-                    </option>
-                    <option value="MONTH" th:text="#{tag.budget-type.MONTH}">
-                      Monat
-                    </option>
-                    <option value="YEAR" th:text="#{tag.budget-type.YEAR}">
-                      Jahr
-                    </option>
-                  </select>
-                </span>
-                <span th:with="fieldId=${'tag-color-select-' + i}">
-                  <label
-                    for="tag-color-select"
-                    th:for="${fieldId}"
-                    class="sr-only"
-                    th:text="#{tag.color}"
-                  >
-                    Farbe
-                  </label>
-                  <select
-                    id="tag-color-select"
-                    th:id="${fieldId}"
-                    th:field="*{tags[__${i}__].color}"
-                  >
-                    <option value="" disabled th:text="#{tag.color}">
+                    </label>
+                    <select
+                      id="tag-budget-type-select"
+                      th:id="${fieldId}"
+                      th:field="*{tags[__${i}__].budgetType}"
+                      th:errorclass="error"
+                    >
+                      <option value="" disabled th:text="#{tag.budget-type}">
+                        Turnus
+                      </option>
+                      <option value="MONTH" th:text="#{tag.budget-type.MONTH}">
+                        Monat
+                      </option>
+                      <option value="YEAR" th:text="#{tag.budget-type.YEAR}">
+                        Jahr
+                      </option>
+                    </select>
+                  </span>
+                  <span th:with="fieldId=${'tag-color-select-' + i}">
+                    <label
+                      for="tag-color-select"
+                      th:for="${fieldId}"
+                      class="sr-only"
+                      th:text="#{tag.color}"
+                    >
                       Farbe
-                    </option>
-                    <option value="LIME" th:text="#{tag.color.LIME}">
-                      Limette
-                    </option>
-                  </select>
-                </span>
-              </li>
-            </ul>
-            <div class="mt-4">
-              <button type="submit" th:text="#{tags.edit.submit}">
-                Änderungen übernehmen
-              </button>
-            </div>
-          </form>
+                    </label>
+                    <select
+                      id="tag-color-select"
+                      th:id="${fieldId}"
+                      th:field="*{tags[__${i}__].color}"
+                      th:errorclass="error"
+                    >
+                      <option value="" disabled th:text="#{tag.color}">
+                        Farbe
+                      </option>
+                      <option value="LIME" th:text="#{tag.color.LIME}">
+                        Limette
+                      </option>
+                    </select>
+                  </span>
+                </li>
+              </ul>
+              <div class="mt-4">
+                <button type="submit" th:text="#{tags.edit.submit}">
+                  Änderungen übernehmen
+                </button>
+              </div>
+            </form>
+          </th:block>
         </div>
       </main>
     </th:block>
