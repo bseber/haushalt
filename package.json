@@ -16,7 +16,7 @@
     "@rollup/plugin-node-resolve": "15.2.3",
     "@rollup/plugin-replace": "5.0.7",
     "@types/chart.js": "2.9.41",
-    "chart.js": "4.4.3",
+    "chart.js": "4.4.4",
     "concurrently": "8.2.2",
     "fast-glob": "3.3.2",
     "idiomorph": "0.3.0",
